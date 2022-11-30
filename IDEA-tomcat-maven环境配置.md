@@ -4,7 +4,7 @@
 
 1. `JDK`版本： `16.0.2`
 2. `IDEA`版本： `2021.3.3`
-3. `tomcat`版本：`10.0.27`
+3. `tomcat`版本：`9.0.69`
 4. `maven`版本： `3.6.3`
 
 ---
@@ -21,33 +21,31 @@
 
 ### 2.1 安装tomcat
 
+说明：tomcat版本为9.0.69
+
 1. 下载官网：https://tomcat.apache.org/
 
-   ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\tomcat10.0.27_windows版本下载.png)
+   ![](pictures/tomcat9.0.69_windows版本下载.png)
 
-2. 解压
+2. 解压到`D:\Environment`文件夹中
 
-   ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\解压.png)
+   ![](pictures/解压.png)
 
 3. tomcat启动和配置
 
    （1）文件夹作用：
 
-   ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\tomcat文件夹内文件作用.png)
+   ![](pictures/tomcat文件夹内文件作用.png)
 
    （2）**启动，关闭tomcat**
 
-   ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\tomcat配置\启动_关闭tomcat.png)
+   ![](pictures/tomcat配置/启动_关闭tomcat.png)
 
    （3）访问测试：http://localhost:8080/
 
    * 本地访问
 
-   ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\tomcat启动页面.png)
-
-   * 远程服务器安装版本（9.0.62）
-
-   ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\远程服务器安装版本.png)
+   ![](pictures/tomcat配置/tomcat启动页面.png)
 
    可能遇到的问题：
 
@@ -57,7 +55,7 @@
 
 ### 2.2 tomcat配置
 
-![服务器核心配置文件](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\tomcat配置\服务器核心配置文件.png)
+![服务器核心配置文件](pictures/tomcat配置/服务器核心配置文件.png)
 
 可以配置启动的端口号
 
@@ -75,13 +73,13 @@
 <Host name="localhost"  appBase="webapps" unpackWARs="true" autoDeploy="true">
 ```
 
-### 2.3 发布一个web网站
+### 3.3 发布一个web网站
 
 > 1. 将自己写的网站，放到服务器（tomcat）中指定的web应用的文件夹（webapps）下
 >
->    ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\我的网站1.png)
+>    ![](pictures/创建网站/我的网站1.png)
 >
->    ![我的网站2](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\我的网站2.png)
+>    ![我的网站2](pictures/创建网站/我的网站2.png)
 >
 > 2. 打开网站进行访问
 >
@@ -89,7 +87,7 @@
 >    localhost:8080/phc/
 >    ```
 >
->    ![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\我的网站3.png)
+>    ![](pictures/我的网站3.png)
 >
 > 3. 网站应该有的结构
 >
@@ -108,6 +106,10 @@
 >    			--js
 >    			--img
 >    ```
+
+
+
+
 
 ## 三、maven环境搭建
 
@@ -288,25 +290,29 @@ IDEA项目创建成功后，看一眼Maven的配置。进入IDEA的`File>Setting
 
 （1）IDEA版本：2021.3.3
 
-（2）tomcat版本：10.0.27
+（2）tomcat版本：9.0.69
 
 ### 5.1 添加项目配置选项
 
-![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\1.png)
+![](pictures/在IDEA中使用tomcat/1.png)
 
 ### 5.2 选择本地tomcat服务器
 
-![2](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\2.png)
+![2](pictures/在IDEA中使用tomcat/2.png)
 
 ### 5.3 配置本地tomcat服务器
 
-![3](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\3.png)
+注：**将tomcat 10.0.27全部更换为9.0.69**
+
+![3](pictures/在IDEA中使用tomcat/3.png)
+
+![](pictures/在IDEA中使用tomcat/将tomcat 10.0.27全部更换为9.0.69.png)
 
 为什么会有这个警告问题：我们访问一个网站，需要指定一个文件夹的路径，比如`localhost:8080/javaweb_01_maven_war`
 
 ### 5.4 添加一个artifact
 
-![4](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\4.png)
+![4](pictures/在IDEA中使用tomcat/4.png)
 
 ### 5.5 对artifact配置的一些解释
 
@@ -315,19 +321,19 @@ IDEA项目创建成功后，看一眼Maven的配置。进入IDEA的`File>Setting
 3. 假如写了一个/javaweb_01_maven_war，则访问路径为：localhost:8080/javaweb_01_maven_war
 4. 这个过程叫做:虚拟路径映射
 
-![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\5.png)
+![](pictures/在IDEA中使用tomcat/5.png)
 
 ### 5.6 启动tomcat服务器
 
-![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\6.png)
+![](pictures/在IDEA中使用tomcat/6.png)
 
 ### 5.7 POM文件讲解
 
 pom.xml是maven的**核心配置文件**
 
-![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\7.png)
+![](pictures/在IDEA中使用tomcat/7.png)
 
-POM代码
+`pom.xml`代码
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -459,4 +465,121 @@ maven由于他的约定大于配置，我们之后可能会遇到我们写的配
 
 ### 5.8 IDEA展示当前maven项目依赖的关系
 
-![](E:\learn_programming_language\Java\7-JavaWeb\笔记\pictures\在IDEA中使用tomcat\8.png)
+![](pictures/在IDEA中使用tomcat/8.png)
+
+## 六、解决配置环境中遇到的问题
+
+### 6.1 启动tomcat控制台乱码问题
+
+![](pictures/环境配置过程中出现的问题/启动tomcat服务器出现乱码.png)
+
+修改`D:\Environment\apache-tomcat-9.0.69\conf`下的`logging.properties`中的参数
+
+```bash
+# java.util.logging.ConsoleHandler.encoding = UTF-8
+java.util.logging.ConsoleHandler.encoding = GBK
+```
+
+![](pictures/环境配置过程中出现的问题/tomcat启动时控制台乱码问题.png)
+
+重启服务器即可
+
+![](pictures/环境配置过程中出现的问题/tomcat服务器启动时乱码问题解决.png)
+
+### 6.2 无法导入maven项目
+
+1. 报错内容：unable to import maven project:see logs for detailWs
+2. 解决方法：降低`maven`版本，最好是使用兼容性很强的`maven 3.6.3`
+
+### 6.3 创建maven项目时每次都要重复配置maven
+
+1. 即使重新配置maven项目成功，构建maven项目时也可能会出现如下错误提示
+
+   ```bash
+   Cannot resolve plugin org.apache.maven.plugins:maven-clean-plugin:2.5
+   ```
+
+2. 解决方法：参考上述 [在IDEA中使用maven/设置创建maven新项目的全局配置] 步骤即可在IDEA中的全局默认配置中完成配置
+
+### 6.4 maven默认web项目中的web.xml版本太旧问题
+
+1. maven默认使用的webapp版本为2.3
+
+   ![](pictures/环境配置过程中出现的问题/webapp过于老旧.png)
+
+2. 而`tomcat 9.0.69`使用的`webapp`版本为4.0
+
+   （1）tomcat中webapp的配置文件所在目录
+
+   ![tomcat中webapp的配置文件目录](pictures/环境配置过程中出现的问题/tomcat中webapp的配置文件目录.png)
+
+   （2）`web.xml`文件中的webapp版本为4.0
+
+   ![](pictures/环境配置过程中出现的问题/tomcat使用的webapp版本为4.0.png)
+
+   
+
+3. 将maven默认使用的webapp_2.3版本替换为`tomcat 9.0.69`使用的`webapp_4.0`版本
+
+   替换的文件位置：`javaweb-01-maven[javaweb项目名称]\src\main\webapp\WEB-INF\web.xml`
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+   <!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+     contributor license agreements.  See the NOTICE file distributed with
+     this work for additional information regarding copyright ownership.
+     The ASF licenses this file to You under the Apache License, Version 2.0
+     (the "License"); you may not use this file except in compliance with
+     the License.  You may obtain a copy of the License at
+   
+         http://www.apache.org/licenses/LICENSE-2.0
+   
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+   -->
+   <!--tomcat 9.0.69使用的webapp版本为4.0-->
+   <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+                         http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+            version="4.0"
+            metadata-complete="true">
+   
+     <display-name>Welcome to Tomcat</display-name>
+     <description>
+       Welcome to Tomcat
+     </description>
+   
+   </web-app>
+   
+   
+   <!--maven默认使用的webapp版本为2.3-->
+   <!--<!DOCTYPE web-app PUBLIC-->
+   <!-- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"-->
+   <!-- "http://java.sun.com/dtd/web-app_2_3.dtd" >-->
+   
+   <!--<web-app>-->
+   <!--  <display-name>Archetype Created Web Application</display-name>-->
+   <!--</web-app>-->
+   ```
+
+
+### 6.5 maven仓库的使用(导jar包)
+
+1. maven仓库地址：https://mvnrepository.com/
+
+   ![](pictures/环境配置过程中出现的问题/maven远程仓库.png)
+
+2. 选择使用人数较多的api版本
+
+   ![](pictures/环境配置过程中出现的问题/选择使用人数较多的api.png)
+
+3. 自动导入依赖的jar包
+
+   ![](pictures/环境配置过程中出现的问题/自动导入依赖的jar包.png)
+
+## 
