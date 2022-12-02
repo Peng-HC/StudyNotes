@@ -851,9 +851,9 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >      The ASF licenses this file to You under the Apache License, Version 2.0
 >      (the "License"); you may not use this file except in compliance with
 >      the License.  You may obtain a copy of the License at
->          
+>                               
 >          http://www.apache.org/licenses/LICENSE-2.0
->          
+>                               
 >      Unless required by applicable law or agreed to in writing, software
 >      distributed under the License is distributed on an "AS IS" BASIS,
 >      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -867,12 +867,12 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >                          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 >             version="4.0"
 >             metadata-complete="true">
->          
+>                               
 >      <display-name>Welcome to Tomcat</display-name>
 >      <description>
 >        Welcome to Tomcat
 >      </description>
->          
+>                               
 >    </web-app>
 >    
 >    
@@ -1367,3 +1367,488 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
    ![](pictures/servlet/servletContext/获取共享数据.png)
 
 7. 
+
+#### 10.6.2 ServletContext应用
+
+##### 1. 获取`web.xml`的初始化参数
+
+可以在`doPost`中拿到在`web.xml`配置的初始化参数
+
+> 1. `javaweb-01-servlet\servlet-02\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <!--配置一些web应用初始化参数-->
+>    <context-param>
+>        <param-name>url</param-name>
+>        <param-value>jdbc:mysql://localhost:3306/mybatis</param-value>
+>    </context-param>
+>    
+>    <!--注册servlet-->
+>    <servlet>
+>        <servlet-name>getInitParameters</servlet-name>
+>        <servlet-class>com.phc.servlet.GetInitParameters</servlet-class>
+>    </servlet>
+>    <!--map映射-->
+>    <servlet-mapping>
+>        <servlet-name>getInitParameters</servlet-name>
+>        <url-pattern>/getInitParameters</url-pattern>
+>    </servlet-mapping>
+>
+> 2. `javaweb-01-servlet\servlet-02\src\main\java\com\phc\servlet\GetInitParameters.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>                
+>    import javax.servlet.ServletContext;
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    import java.io.PrintWriter;
+>                
+>    /**
+>     * @FileName GetInitParameters.class
+>     * @Description 获取web.xml的初始化参数
+>     * @Author phc
+>     * @date 2022/12/2 9:42
+>     * @Version 1.0
+>     */
+>    public class GetInitParameters extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            // Alt+Enter 快捷键可以创建变量
+>            ServletContext servletContext = this.getServletContext();
+>            String url = servletContext.getInitParameter("url");
+>            resp.getWriter().println("url:"+url);
+>        }
+>                
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+>    
+>
+> 3. 结果：
+>
+>    ![](pictures/servlet/servletContext/获取web.xml的初始化参数.png)
+
+##### 2. 请求转发
+
+> 1. `javaweb-01-servlet\servlet-02\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <!--请求转发的servlet-->
+>    <servlet>
+>        <servlet-name>testRequestDispatcher</servlet-name>
+>        <servlet-class>com.phc.servlet.testRequestDispatcher</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>testRequestDispatcher</servlet-name>
+>        <url-pattern>/testRequestDispatcher</url-pattern>
+>    </servlet-mapping>
+>    ```
+>
+>    
+>
+> 2. `javaweb-01-servlet\servlet-02\src\main\java\com\phc\servlet\testRequestDispatcher.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.RequestDispatcher;
+>    import javax.servlet.ServletContext;
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    import java.io.PrintWriter;
+>    
+>    /**
+>     * @FileName testRequestDispatcher.class
+>     * @Description 请求转发
+>     * @Author phc
+>     * @date 2022/12/2 10:01
+>     * @Version 1.0
+>     */
+>    public class testRequestDispatcher extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            resp.setCharacterEncoding("GBK");
+>            resp.getWriter().println("进入了请求转发页面,正在跳转到其他页面...");
+>            System.out.println("进入了请求转发页面,正在跳转到其他页面...");
+>            ServletContext servletContext = this.getServletContext();
+>            // 转发的地址(相对于当前项目)
+>            String dispatcherUrl = "/getInitParameters";
+>            // RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher(dispatcherUrl); // 转发的请求路径
+>            // requestDispatcher.forward(req,resp); // 调用forward实现请求转发
+>            servletContext.getRequestDispatcher(dispatcherUrl).forward(req,resp);
+>    
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    
+>    ```
+>
+> 3. 结果
+>
+>    ![](pictures/servlet/servletContext/请求转发.png)
+>
+> 4. 
+
+##### 3. 请求转发与重定向的区别
+
+![](pictures/servlet/servletContext/请求转发与重定向的区别1.png)
+
+##### 4. 读取资源文件
+
+> 1. 新建文件`db.properties`
+>
+>    在java目录下新建db.properties
+>
+>    或者在resource目录下新建db.properties（推荐）
+>
+>    ```properties
+>    username=root
+>    password=123456
+>    ```
+>
+> 2. `javaweb-01-servlet\servlet-02\src\main\java\com\phc\servlet\readProperties.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    import java.io.InputStream;
+>    import java.util.Properties;
+>    
+>    /**
+>     * @FileName readProperties.class
+>     * @Description 读取db.properties配置文件
+>     * @Author phc
+>     * @date 2022/12/2 10:33
+>     * @Version 1.0
+>     */
+>    public class readProperties extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            InputStream resourceAsStream = this.getServletContext().getResourceAsStream("/WEB-INF/classes/db.properties");
+>            Properties prop = new Properties();
+>            prop.load(resourceAsStream);
+>            String username=prop.getProperty("username");
+>            String pwd=prop.getProperty("password");
+>            resp.getWriter().println("username:"+username);
+>            resp.getWriter().println("password:"+pwd);
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+>    ![](pictures/servlet/servletContext/读取db.properties配置文件.png)
+>
+>    发现：都被打包到同一个路径下：`classes` 我们俗称这个路径为classpath
+>
+> 3. `javaweb-01-servlet\servlet-02\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <!--获取配置文件db.properties内容-->
+>    <servlet>
+>        <servlet-name>readProperties</servlet-name>
+>        <servlet-class>com.phc.servlet.readProperties</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>readProperties</servlet-name>
+>        <url-pattern>/readProperties</url-pattern>
+>    </servlet-mapping>
+>    ```
+>
+> 4. 结果
+>
+>    ![](pictures/servlet/servletContext/读取到的db.properties配置文件.png)
+>
+> 5. 
+
+### 10.7 HttpServletResponse
+
+web服务器接收到客户端的http请求，针对这个请求，分别创建一个代表请求的`HttpServletRequest`对象，一个代表响应的`HttpServletResponse`
+
+（1）如果要获取客户端请求过来的参数：找`HttpServletRequest`
+（2）如果要给客户端响应一些信息：找`HttpServletResponse`
+
+#### 10.7.1 该类中方法的简单分类
+
+> 1. 负责向浏览器发送数据的方法
+>
+>    ```java
+>    public ServletOutputStream getOutputStream() throws IOException;
+>    public PrintWriter getWriter() throws IOException;
+>    ```
+>
+> 2. 负责向浏览器发送响应头的方法
+>
+>    ```java
+>    public void setCharacterEncoding(String charset);
+>    public void setContentLength(int len);
+>    public void setContentLengthLong(long len);
+>    public void setContentType(String type);
+>    public void setDateHeader(String name, long date);
+>    public void addDateHeader(String name, long date);
+>    public void setHeader(String name, String value);
+>    public void addHeader(String name, String value);
+>    public void setIntHeader(String name, int value);
+>    public void addIntHeader(String name, int value);
+>    ```
+>
+> 3. 响应的状态码(常见)
+>
+>    ```java
+>    /**
+>         * Status code (200) indicating the request succeeded normally.
+>         */
+>    public static final int SC_OK = 200;
+>    /**
+>         * Status code (302) indicating that the resource has temporarily
+>         * moved to another location, but that future references should
+>         * still use the original URI to access the resource.
+>         *
+>         * This definition is being retained for backwards compatibility.
+>         * SC_FOUND is now the preferred definition.
+>         */
+>    public static final int SC_MOVED_TEMPORARILY = 302;
+>    /**
+>         * Status code (404) indicating that the requested resource is not
+>         * available.
+>         */
+>    public static final int SC_NOT_FOUND = 404;
+>    /**
+>         * Status code (500) indicating an error inside the HTTP server
+>         * which prevented it from fulfilling the request.
+>         */
+>    public static final int SC_INTERNAL_SERVER_ERROR = 500;
+>    /**
+>         * Status code (502) indicating that the HTTP server received an
+>         * invalid response from a server it consulted when acting as a
+>         * proxy or gateway.
+>         */
+>    public static final int SC_BAD_GATEWAY = 502;
+>    
+>    //...
+>    ```
+>
+> 4. 
+
+#### 10.7.2 该类的常见应用
+
+> 1. 向浏览器输出消息
+>
+> 2. 下载文件
+>
+>    （1）获取下载文件的路径
+>    （2）下载的文件名是啥？
+>    （3）设置想办法让浏览器能都支持我们下载的东西 文件名是中文的时候，可以设置`URLEncoder.encode(fileName, “UTF-8”)`，否则有可能乱码
+>    （4）获取下载文件的输入流
+>    （5）创建缓冲区
+>    （6）获取OutputStrem对象
+>    （7）将FileOutputStream流写入到buffer缓冲区，使用OutputStream将缓冲区中的数据输出到客户端
+>
+>    （8）刷新后关闭各种流对象
+>
+> 3. 验证码实现
+
+#### 10.7.3 Response下载文件
+
+> 1. `javaweb-01-servlet\response-01\src\main\java\com\phc\servlet\FileServlet.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.ServletOutputStream;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.FileInputStream;
+>    import java.io.IOException;
+>    import java.net.URLEncoder;
+>    
+>    /**
+>     * @FileName FileServlet.class
+>     * @Description Response类下载文件
+>     * @Author phc
+>     * @date 2022/12/2 11:25
+>     * @Version 1.0
+>     */
+>    public class FileServlet extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            // 1.获取下载文件的路径
+>            String realPath="E:\\learn_programming_language\\Java\\7-JavaWeb\\javaweb-01-servlet\\response-01\\src\\main\\resources\\东南大学校门.jpg";
+>            // 2.下载的文件名是啥？
+>            String fileName=realPath.substring(realPath.lastIndexOf("\\")+1);
+>            // 3.设置想办法让浏览器能都支持我们下载的东西 文件名是中文的时候,可以设置URLEncoder.encode(fileName, “UTF-8”),否则有可能乱码
+>            resp.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+>            // 4.获取下载文件的输入流
+>            FileInputStream in = new FileInputStream(realPath);
+>            // 5.创建缓冲区
+>            int len=0;
+>            byte[] buffer = new byte[1024];
+>            // 6.获取OutputStrem对象
+>            ServletOutputStream out = resp.getOutputStream();
+>            // 7.将FileOutputStream流写入到buffer缓冲区，使用OutputStream将缓冲区中的数据输出到客户端
+>            while((len=in.read(buffer))>0) {
+>                out.write(buffer,0,len);
+>            }
+>            // 8.刷新后关闭各种流对象
+>            out.flush();
+>            out.close();
+>            in.close();
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+>    
+>
+> 2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <!--注册servlet-->
+>    <servlet>
+>        <servlet-name>downloadFile</servlet-name>
+>        <servlet-class>com.phc.servlet.FileServlet</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>downloadFile</servlet-name>
+>        <url-pattern>/downloadFile</url-pattern>
+>    </servlet-mapping>
+>    ```
+>
+>    
+>
+> 3. 文件结构
+>
+>    ![](pictures/servlet/HttpServletResponse/需要下载的资源文件.png)
+>
+> 4. 网页结果
+>
+>    ![](pictures/servlet/HttpServletResponse/自动下载资源文件.png)
+>
+> 5. 
+
+#### 10.7.4 Response验证码实现
+
+> 验证码怎么来的？
+>
+> - 前端实现
+> - 后端实现，需要用到java图片类，生成一个图片
+>
+> 1. `javaweb-01-servlet\response-01\src\main\java\com\phc\servlet\ImageServlet.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.imageio.ImageIO;
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.awt.*;
+>    import java.awt.image.BufferedImage;
+>    import java.io.IOException;
+>    import java.util.Random;
+>    
+>    /**
+>     * @FileName ImageServlet
+>     * @Description 模拟图片验证码的生成
+>     * @Author phc
+>     * @date 2022/12/2 14:50
+>     * @Version 1.0
+>     */
+>    public class ImageServlet extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            // 让浏览器5秒自动刷新一次
+>            resp.setHeader("refresh","3");
+>            // 在内存中创建一个图片
+>            BufferedImage bufferedImage = new BufferedImage(100, 30, BufferedImage.TYPE_INT_RGB);
+>            // 得到图片(相当于画笔)
+>            Graphics2D paint = (Graphics2D)bufferedImage.getGraphics();
+>            // 设置背景颜色为蓝色
+>            paint.setColor(Color.BLUE);
+>            paint.fillRect(0,0,100,30);
+>            // 给背景写数字验证码
+>            paint.setColor(Color.WHITE);
+>            paint.setFont(new Font(null,Font.BOLD,20));
+>            paint.drawString(generateRandomNums(),0,20);
+>            // 告诉浏览器用图片的方式打开
+>            resp.setContentType("image/jpeg");
+>            // 网站存在缓存，不让浏览器缓存
+>            resp.setDateHeader("Expires",0);
+>            resp.addHeader("Cache-Control","no-cache");
+>            resp.setHeader("Pragma","no-cache");
+>    
+>            ImageIO.write(bufferedImage,"jpeg",resp.getOutputStream());
+>        }
+>    
+>        // 生成随机数
+>        private String generateRandomNums() {
+>            Random random=new Random();
+>            String num=random.nextInt(99999999)+"";
+>            StringBuilder stringBuilder = new StringBuilder();
+>            // 如果数字不足8个，则补0
+>            for (int i=0;i<8-num.length();i++) {
+>                stringBuilder.append("0");
+>            }
+>            return stringBuilder.toString()+num;
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+>    
+>
+> 2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <!--图片验证码-->
+>    <servlet>
+>        <servlet-name>verificationCode</servlet-name>
+>        <servlet-class>com.phc.servlet.ImageServlet</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>verificationCode</servlet-name>
+>        <url-pattern>/verificationCode  </url-pattern>
+>    </servlet-mapping>
+>    ```
+>
+>    
+>
+> 3. 网页结果
+>
+>    ![](pictures/servlet/HttpServletResponse/验证码的生成.png)
+>
+> 4. 
