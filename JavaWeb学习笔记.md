@@ -851,9 +851,9 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >      The ASF licenses this file to You under the Apache License, Version 2.0
 >      (the "License"); you may not use this file except in compliance with
 >      the License.  You may obtain a copy of the License at
->                               
+>                                     
 >          http://www.apache.org/licenses/LICENSE-2.0
->                               
+>                                     
 >      Unless required by applicable law or agreed to in writing, software
 >      distributed under the License is distributed on an "AS IS" BASIS,
 >      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -867,12 +867,12 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >                          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 >             version="4.0"
 >             metadata-complete="true">
->                               
+>                                     
 >      <display-name>Welcome to Tomcat</display-name>
 >      <description>
 >        Welcome to Tomcat
 >      </description>
->                               
+>                                     
 >    </web-app>
 >    
 >    
@@ -1398,7 +1398,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                
+>                      
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1406,7 +1406,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                
+>                      
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1422,7 +1422,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                
+>                      
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1438,6 +1438,8 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 
 ##### 2. 请求转发
 
+一个web资源服务器B（中介）收到客户端A请求服务器C的资源后，B会向C发出请求，拿到C的资源后，再将资源返回给A，这个过程就叫做请求转发。
+
 > 1. `javaweb-01-servlet\servlet-02\src\main\webapp\WEB-INF\web.xml`
 >
 >    ```xml
@@ -1452,24 +1454,22 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    </servlet-mapping>
 >    ```
 >
->    
->
-> 2. `javaweb-01-servlet\servlet-02\src\main\java\com\phc\servlet\testRequestDispatcher.java`
+>    2. `javaweb-01-servlet\servlet-02\src\main\java\com\phc\servlet\testRequestDispatcher.java`
 >
 >    ```java
->    package com.phc.servlet;
->    
+>     package com.phc.servlet;
+> 
 >    import javax.servlet.RequestDispatcher;
->    import javax.servlet.ServletContext;
+>       import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->    
+> 
 >    /**
->     * @FileName testRequestDispatcher.class
+>        * @FileName testRequestDispatcher.class
 >     * @Description 请求转发
 >     * @Author phc
 >     * @date 2022/12/2 10:01
@@ -1487,17 +1487,17 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            // RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher(dispatcherUrl); // 转发的请求路径
 >            // requestDispatcher.forward(req,resp); // 调用forward实现请求转发
 >            servletContext.getRequestDispatcher(dispatcherUrl).forward(req,resp);
->    
+> 
 >        }
 >    
 >        @Override
->        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>           protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
 >        }
 >    }
->    
+> 
 >    ```
->
+>    
 > 3. 结果
 >
 >    ![](pictures/servlet/servletContext/请求转发.png)
@@ -1505,6 +1505,14 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 > 4. 
 
 ##### 3. 请求转发与重定向的区别
+
+**面试题：请你聊聊重定向和转发的区别？**
+
+- 相同点
+  - 页面都会实现跳转
+- 相同点
+  - 请求转发，URL地址拦不会变； 307
+  - 重定向，URL地址拦会发生变化。 302
 
 ![](pictures/servlet/servletContext/请求转发与重定向的区别1.png)
 
@@ -1677,7 +1685,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >
 >    ```java
 >    package com.phc.servlet;
->    
+>          
 >    import javax.servlet.ServletException;
 >    import javax.servlet.ServletOutputStream;
 >    import javax.servlet.http.HttpServlet;
@@ -1686,7 +1694,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    import java.io.FileInputStream;
 >    import java.io.IOException;
 >    import java.net.URLEncoder;
->    
+>          
 >    /**
 >     * @FileName FileServlet.class
 >     * @Description Response类下载文件
@@ -1719,7 +1727,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            out.close();
 >            in.close();
 >        }
->    
+>          
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1766,7 +1774,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >
 >    ```java
 >    package com.phc.servlet;
->    
+>          
 >    import javax.imageio.ImageIO;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1776,7 +1784,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    import java.awt.image.BufferedImage;
 >    import java.io.IOException;
 >    import java.util.Random;
->    
+>          
 >    /**
 >     * @FileName ImageServlet
 >     * @Description 模拟图片验证码的生成
@@ -1806,10 +1814,10 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            resp.setDateHeader("Expires",0);
 >            resp.addHeader("Cache-Control","no-cache");
 >            resp.setHeader("Pragma","no-cache");
->    
+>          
 >            ImageIO.write(bufferedImage,"jpeg",resp.getOutputStream());
 >        }
->    
+>          
 >        // 生成随机数
 >        private String generateRandomNums() {
 >            Random random=new Random();
@@ -1821,7 +1829,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            }
 >            return stringBuilder.toString()+num;
 >        }
->    
+>          
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1845,10 +1853,188 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    </servlet-mapping>
 >    ```
 >
->    
->
-> 3. 网页结果
+>    3. 网页结果
 >
 >    ![](pictures/servlet/HttpServletResponse/验证码的生成.png)
 >
 > 4. 
+
+#### 10.7.5 Response重定向
+
+一个web资源收到客户端A请求后，B会通知A客户端去访问另外一个web资源C（这将会改变A访问的url），这个过程就叫做重定向。常见场景：**用户登录、注册**
+
+```java
+void sendRedirect(String var1) throws IOException;
+```
+
+> 1. `javaweb-01-servlet\response-01\src\main\java\com\phc\servlet\SendRedirectServlet.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName SendRedirectServlet.class
+>     * @Description 重定向
+>     * @Author phc
+>     * @date 2022/12/3 9:38
+>     * @Version 1.0
+>     */
+>    public class SendRedirectServlet extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            System.out.println("正在进行重定向...\n跳转页面中...");
+>            String newUrl="verificationCode";
+>            resp.sendRedirect(newUrl);
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+> 2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <!--重定向-->
+>    <servlet>
+>        <servlet-name>redirect</servlet-name>
+>        <servlet-class>com.phc.servlet.SendRedirectServlet</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>redirect</servlet-name>
+>        <url-pattern>/redirect</url-pattern>
+>    </servlet-mapping>
+>    ```
+>
+> 3. 页面显示
+>
+>    ![](pictures/servlet/HttpServletResponse/重定向的页面url发生了改变.png)
+
+##### 模拟登录
+
+1. 文件结构
+
+   ![](pictures/servlet/HttpServletResponse/登录页面文件结构.png)
+
+2. `javaweb-01-servlet\response-01\src\main\webapp\index.jsp`
+
+   登录信息表单收集页面
+
+   ```jsp
+   <html>
+   <body>
+   <h2>Hello World!</h2>
+   
+   <%--防止页面显示格式出现乱码--%>
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <%--这里提交的路径，需要寻找项目的路径--%>
+   <%--${pageContext.request.contextPath}代表当前的项目--%>
+   <form action="${pageContext.request.contextPath}/login" method="get">
+       用户名:<input type="text" name="username" /> <br />
+       密码:<input type="password" name="pwd" /> <br />
+       <input type="submit" />
+   </form>
+   </body>
+   </html>
+   ```
+
+3. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
+
+   表单处理映射配置
+
+   ```xml
+   <!--登录-->
+   <!--将页面表单提交过来的登录信息交给LoginServlet.java处理-->
+   <servlet>
+       <servlet-name>login_handler</servlet-name>
+       <servlet-class>com.phc.servlet.LoginServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+       <servlet-name>login_handler</servlet-name>
+       <url-pattern>/login</url-pattern>
+   </servlet-mapping>
+   ```
+
+4. `javaweb-01-servlet\response-01\src\main\java\com\phc\servlet\LoginServlet.java`
+
+   表单处理页面
+
+   ```java
+   package com.phc.servlet;
+   
+   import javax.servlet.ServletException;
+   import javax.servlet.http.HttpServlet;
+   import javax.servlet.http.HttpServletRequest;
+   import javax.servlet.http.HttpServletResponse;
+   import java.io.IOException;
+   
+   /**
+    * @FileName LoginServlet.java
+    * @Description 登录信息处理
+    * @Author phc
+    * @date 2022/12/3 10:04
+    * @Version 1.0
+    */
+   public class LoginServlet extends HttpServlet {
+       @Override
+       protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+           System.out.println("登录页面信息处理中...");
+           String username = req.getParameter("username");
+           String pwd = req.getParameter("pwd");
+   
+           System.out.println(username+":"+pwd);
+           //重定向的时候，一定要注意路径问题，否则可能会404
+           String newUrl="login_success.jsp";
+           resp.sendRedirect(newUrl);
+       }
+   
+       @Override
+       protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+           doGet(req, resp);
+       }
+   }
+   ```
+
+5. `javaweb-01-servlet\response-01\src\main\webapp\login_success.jsp`
+
+   登录成功页面
+
+   ```jsp
+   <%--
+     Created by IntelliJ IDEA.
+     User: PengHC
+     Date: 2022/12/3
+     Time: 10:16
+     To change this template use File | Settings | File Templates.
+   --%>
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>登录成功</title>
+   </head>
+       <h1>恭喜你,登录成功!</h1>
+   <body>
+   </body>
+   </html>
+   ```
+
+6. 结果
+
+   （1）登录表单信息收集
+
+   ![](pictures/servlet/HttpServletResponse/登录表单信息收集.png)
+
+   （2）重定向至登录成功页面
+
+   ![](pictures/servlet/HttpServletResponse/重定向至登录成功页面.png)
+
+7. 
+
