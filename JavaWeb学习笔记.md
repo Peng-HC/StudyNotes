@@ -2040,6 +2040,8 @@ void sendRedirect(String var1) throws IOException;
 
 ## 10.8 HttpServletRequest
 
+`HttpServletRequest`代表客户端的请求，用户通过`http`协议访问服务器，`HTTP`请求中的所有信息会被封装到`HttpServletRequest`中，通过`HttpServletRequest`这个方法，可以获取客户端的所有信息
+
 #### 10.8.1 request实现请求转发（推荐）
 
 > 1. `javaweb-01-servlet\request-01\src\main\webapp\index.jsp`
