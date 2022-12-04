@@ -784,7 +784,6 @@ java.util.logging.ConsoleHandler.encoding = GBK
    <!--</web-app>-->
    ```
 
-   
 
 ### 9.5 maven仓库的使用(导jar包)
 
@@ -851,9 +850,9 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >      The ASF licenses this file to You under the Apache License, Version 2.0
 >      (the "License"); you may not use this file except in compliance with
 >      the License.  You may obtain a copy of the License at
->                                        
+>    
 >          http://www.apache.org/licenses/LICENSE-2.0
->                                        
+>    
 >      Unless required by applicable law or agreed to in writing, software
 >      distributed under the License is distributed on an "AS IS" BASIS,
 >      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -867,14 +866,12 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >                          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 >             version="4.0"
 >             metadata-complete="true">
->                                        
+>    
 >      <display-name>Welcome to Tomcat</display-name>
 >      <description>
 >        Welcome to Tomcat
 >      </description>
->                                        
 >    </web-app>
->    
 >    
 >    <!--maven默认使用的webapp版本为2.3-->
 >    <!--<!DOCTYPE web-app PUBLIC-->
@@ -884,15 +881,12 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >    <!--<web-app>-->
 >    <!--  <display-name>Archetype Created Web Application</display-name>-->
 >    <!--</web-app>-->
->    ```
 >
 > 4. 在子项目的`main`文件夹下为`webapp`模板文件新建文件夹`src`和`resource`
 >
-> 5. 父子项目完整结构
+>    父子项目完整结构
 >
 >    ![](pictures/servlet/父子项目完整结构.png)
->
-> 6. 
 
 #### 10.2.2 关于maven父子工程的理解
 
@@ -1366,8 +1360,6 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 
    ![](pictures/servlet/servletContext/获取共享数据.png)
 
-7. 
-
 #### 10.6.2 ServletContext应用
 
 ##### 1. 获取`web.xml`的初始化参数
@@ -1398,7 +1390,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                         
+>                            
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1406,7 +1398,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                         
+>                            
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1422,7 +1414,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                         
+>                            
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1430,9 +1422,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    }
 >    ```
 >
->    
->
-> 3. 结果：
+>    3. 结果：
 >
 >    ![](pictures/servlet/servletContext/获取web.xml的初始化参数.png)
 
@@ -1498,11 +1488,9 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 > 
 >    ```
 >    
-> 3. 结果
+> 2. 结果
 >
 >    ![](pictures/servlet/servletContext/请求转发.png)
->
-> 4. 
 
 ##### 3. 请求转发与重定向的区别
 
@@ -1589,8 +1577,6 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 > 4. 结果
 >
 >    ![](pictures/servlet/servletContext/读取到的db.properties配置文件.png)
->
-> 5. 
 
 ### 10.7 HttpServletResponse
 
@@ -1655,11 +1641,9 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->    
+>       
 >    //...
 >    ```
->
-> 4. 
 
 #### 10.7.2 该类的常见应用
 
@@ -1685,7 +1669,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >
 >    ```java
 >    package com.phc.servlet;
->             
+>                
 >    import javax.servlet.ServletException;
 >    import javax.servlet.ServletOutputStream;
 >    import javax.servlet.http.HttpServlet;
@@ -1694,7 +1678,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    import java.io.FileInputStream;
 >    import java.io.IOException;
 >    import java.net.URLEncoder;
->             
+>                
 >    /**
 >     * @FileName FileServlet.class
 >     * @Description Response类下载文件
@@ -1727,7 +1711,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            out.close();
 >            in.close();
 >        }
->             
+>                
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1735,12 +1719,10 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    }
 >    ```
 >
->    
->
-> 2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
+>    2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
 >
 >    ```xml
->    <!--注册servlet-->
+>   <!--注册servlet-->
 >    <servlet>
 >        <servlet-name>downloadFile</servlet-name>
 >        <servlet-class>com.phc.servlet.FileServlet</servlet-class>
@@ -1750,18 +1732,14 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >        <url-pattern>/downloadFile</url-pattern>
 >    </servlet-mapping>
 >    ```
->
->    
->
+> 
 > 3. 文件结构
 >
->    ![](pictures/servlet/HttpServletResponse/需要下载的资源文件.png)
+>       ![](pictures/servlet/HttpServletResponse/需要下载的资源文件.png)
 >
 > 4. 网页结果
 >
 >    ![](pictures/servlet/HttpServletResponse/自动下载资源文件.png)
->
-> 5. 
 
 #### 10.7.4 Response验证码实现
 
@@ -1774,7 +1752,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >
 >    ```java
 >    package com.phc.servlet;
->             
+>                
 >    import javax.imageio.ImageIO;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1784,7 +1762,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    import java.awt.image.BufferedImage;
 >    import java.io.IOException;
 >    import java.util.Random;
->             
+>                
 >    /**
 >     * @FileName ImageServlet
 >     * @Description 模拟图片验证码的生成
@@ -1814,10 +1792,10 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            resp.setDateHeader("Expires",0);
 >            resp.addHeader("Cache-Control","no-cache");
 >            resp.setHeader("Pragma","no-cache");
->             
+>                
 >            ImageIO.write(bufferedImage,"jpeg",resp.getOutputStream());
 >        }
->             
+>                
 >        // 生成随机数
 >        private String generateRandomNums() {
 >            Random random=new Random();
@@ -1829,7 +1807,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            }
 >            return stringBuilder.toString()+num;
 >        }
->             
+>                
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1837,12 +1815,10 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    }
 >    ```
 >
->    
->
-> 2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
+>    2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
 >
 >    ```xml
->    <!--图片验证码-->
+>   <!--图片验证码-->
 >    <servlet>
 >        <servlet-name>verificationCode</servlet-name>
 >        <servlet-class>com.phc.servlet.ImageServlet</servlet-class>
@@ -1852,7 +1828,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >        <url-pattern>/verificationCode  </url-pattern>
 >    </servlet-mapping>
 >    ```
->
+> 
 >    3. 网页结果
 >
 >    ![](pictures/servlet/HttpServletResponse/验证码的生成.png)
@@ -2110,8 +2086,6 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ```java
 >    package com.phc.servlet;
->    
->    
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
@@ -2120,12 +2094,12 @@ void sendRedirect(String var1) throws IOException;
 >    import java.util.Arrays;
 >    
 >    /**
->     * @FileName LoginServlet.java
->     * @Description 使用请求转发完成登录操作
->     * @Author phc
->     * @date 2022/12/4 9:35
->     * @Version 1.0
->     */
+>        * @FileName LoginServlet.java
+>        * @Description 使用请求转发完成登录操作
+>        * @Author phc
+>        * @date 2022/12/4 9:35
+>        * @Version 1.0
+>        */
 >    public class LoginServlet extends HttpServlet {
 >        @Override
 >        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -2143,18 +2117,17 @@ void sendRedirect(String var1) throws IOException;
 >            // 通过请求转发
 >            String new_url="/login_success.jsp";
 >            req.getRequestDispatcher(new_url).forward(req,resp);
->    //        resp.sendRedirect(new_url);
+>            //        resp.sendRedirect(new_url);
 >        }
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
 >        }
 >    }
->    ```
 >
 > 4. `javaweb-01-servlet\request-01\src\main\webapp\WEB-INF\web.xml`
 >
->    页面配置
+>      页面配置
 >
 >    ```xml
 >    <?xml version="1.0" encoding="UTF-8"?>
@@ -2163,22 +2136,22 @@ void sendRedirect(String var1) throws IOException;
 >    <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 >             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
->                          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+>                                 http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 >             version="4.0"
 >             metadata-complete="true">
 >    
->      <display-name>Welcome to Tomcat</display-name>
->      <description>
->        Welcome to Tomcat
->      </description>
->      <servlet>
->        <servlet-name>loginServlet</servlet-name>
->        <servlet-class>com.phc.servlet.LoginServlet</servlet-class>
->      </servlet>
->      <servlet-mapping>
->        <servlet-name>loginServlet</servlet-name>
->        <url-pattern>/login</url-pattern>
->      </servlet-mapping>
+>        <display-name>Welcome to Tomcat</display-name>
+>        <description>
+>            Welcome to Tomcat
+>        </description>
+>        <servlet>
+>            <servlet-name>loginServlet</servlet-name>
+>            <servlet-class>com.phc.servlet.LoginServlet</servlet-class>
+>        </servlet>
+>        <servlet-mapping>
+>            <servlet-name>loginServlet</servlet-name>
+>            <url-pattern>/login</url-pattern>
+>        </servlet-mapping>
 >    </web-app>
 >    ```
 >
