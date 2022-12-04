@@ -851,9 +851,9 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >      The ASF licenses this file to You under the Apache License, Version 2.0
 >      (the "License"); you may not use this file except in compliance with
 >      the License.  You may obtain a copy of the License at
->                                     
+>                                        
 >          http://www.apache.org/licenses/LICENSE-2.0
->                                     
+>                                        
 >      Unless required by applicable law or agreed to in writing, software
 >      distributed under the License is distributed on an "AS IS" BASIS,
 >      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -867,12 +867,12 @@ java.util.logging.ConsoleHandler.encoding = GBK
 >                          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
 >             version="4.0"
 >             metadata-complete="true">
->                                     
+>                                        
 >      <display-name>Welcome to Tomcat</display-name>
 >      <description>
 >        Welcome to Tomcat
 >      </description>
->                                     
+>                                        
 >    </web-app>
 >    
 >    
@@ -1398,7 +1398,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                      
+>                         
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1406,7 +1406,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                      
+>                         
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1422,7 +1422,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                      
+>                         
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1511,8 +1511,8 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 - 相同点
   - 页面都会实现跳转
 - 相同点
-  - 请求转发，URL地址拦不会变； 307
-  - 重定向，URL地址拦会发生变化。 302
+  - 请求转发，URL地址拦不会变；状态码：307
+  - 重定向，URL地址拦会发生变化；状态码：302
 
 ![](pictures/servlet/servletContext/请求转发与重定向的区别1.png)
 
@@ -1685,7 +1685,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >
 >    ```java
 >    package com.phc.servlet;
->          
+>             
 >    import javax.servlet.ServletException;
 >    import javax.servlet.ServletOutputStream;
 >    import javax.servlet.http.HttpServlet;
@@ -1694,7 +1694,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    import java.io.FileInputStream;
 >    import java.io.IOException;
 >    import java.net.URLEncoder;
->          
+>             
 >    /**
 >     * @FileName FileServlet.class
 >     * @Description Response类下载文件
@@ -1727,7 +1727,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            out.close();
 >            in.close();
 >        }
->          
+>             
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1774,7 +1774,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >
 >    ```java
 >    package com.phc.servlet;
->          
+>             
 >    import javax.imageio.ImageIO;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1784,7 +1784,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    import java.awt.image.BufferedImage;
 >    import java.io.IOException;
 >    import java.util.Random;
->          
+>             
 >    /**
 >     * @FileName ImageServlet
 >     * @Description 模拟图片验证码的生成
@@ -1814,10 +1814,10 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            resp.setDateHeader("Expires",0);
 >            resp.addHeader("Cache-Control","no-cache");
 >            resp.setHeader("Pragma","no-cache");
->          
+>             
 >            ImageIO.write(bufferedImage,"jpeg",resp.getOutputStream());
 >        }
->          
+>             
 >        // 生成随机数
 >        private String generateRandomNums() {
 >            Random random=new Random();
@@ -1829,7 +1829,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >            }
 >            return stringBuilder.toString()+num;
 >        }
->          
+>             
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -2036,5 +2036,153 @@ void sendRedirect(String var1) throws IOException;
 
    ![](pictures/servlet/HttpServletResponse/重定向至登录成功页面.png)
 
-7. 
+
+
+## 10.8 HttpServletRequest
+
+#### 10.8.1 request实现请求转发（推荐）
+
+> 1. `javaweb-01-servlet\request-01\src\main\webapp\index.jsp`
+>
+>    提交表单页面
+>
+>    ```jsp
+>    <%--
+>      Created by IntelliJ IDEA.
+>      User: PengH
+>      Date: 2022/12/4
+>      Time: 9:34
+>      To change this template use File | Settings | File Templates.
+>    --%>
+>    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+>    <html>
+>    <head>
+>        <title>登录</title>
+>    </head>
+>    <body>
+>    <%--<div style="text-align: center">--%>
+>    <div>
+>        <%--以post方式提交表单到我们的login请求--%>
+>        <form action="login" methods="post">
+>            用户名:<input type="text" name="username" /> <br />
+>            密码:<input type="password" name="pwd" /> <br />
+>            爱好:
+>            <input type="checkbox" name="hobbies" value="唱歌">唱歌 <br />
+>            <input type="checkbox" name="hobbies" value="跳舞">跳舞 <br />
+>            <input type="checkbox" name="hobbies" value="rap">rap <br />
+>            <input type="checkbox" name="hobbies" value="篮球">篮球 <br />
+>            <input type="checkbox" name="hobbies" value="javaweb">javaweb <br />
+>            <input type="submit" />
+>        </form>
+>    </div>
+>    </body>
+>    </html>
+>    ```
+>
+> 2. `javaweb-01-servlet\request-01\src\main\webapp\login_success.jsp`
+>
+>    登录成功页面
+>
+>    ```jsp
+>    <%--
+>      Created by IntelliJ IDEA.
+>      User: PengH
+>      Date: 2022/12/4
+>      Time: 9:49
+>      To change this template use File | Settings | File Templates.
+>    --%>
+>    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+>    <html>
+>    <head>
+>        <title>登录成功</title>
+>    </head>
+>    <body>
+>    <h1>恭喜你,登录成功!</h1>
+>    </body>
+>    </html>
+>    ```
+>
+> 3. `javaweb-01-servlet\request-01\src\main\java\com\phc\servlet\LoginServlet.java`
+>
+>    后端：表单处理和request实现请求转发
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    import java.util.Arrays;
+>    
+>    /**
+>     * @FileName LoginServlet.java
+>     * @Description 使用请求转发完成登录操作
+>     * @Author phc
+>     * @date 2022/12/4 9:35
+>     * @Version 1.0
+>     */
+>    public class LoginServlet extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            // 设置请求和响应编码,防止输出乱码
+>            resp.setCharacterEncoding("utf-8");
+>            req.setCharacterEncoding("utf-8");
+>            String username = req.getParameter("username");
+>            String password = req.getParameter("pwd");
+>            // req.getParameterValues返回一个数组
+>            String[] hobbies = req.getParameterValues("hobbies");
+>            System.out.println("--------------------------------");
+>            System.out.println(username+":"+password);
+>            System.out.println("爱好:\n"+ Arrays.toString(hobbies));
+>            System.out.println("--------------------------------");
+>            // 通过请求转发
+>            String new_url="/login_success.jsp";
+>            req.getRequestDispatcher(new_url).forward(req,resp);
+>    //        resp.sendRedirect(new_url);
+>        }
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+> 4. `javaweb-01-servlet\request-01\src\main\webapp\WEB-INF\web.xml`
+>
+>    页面配置
+>
+>    ```xml
+>    <?xml version="1.0" encoding="UTF-8"?>
+>    <!--tomcat 9.0.69使用的webapp版本为4.0-->
+>    <!--web.xml是配置我们web的核心应用-->
+>    <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+>             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+>                          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+>             version="4.0"
+>             metadata-complete="true">
+>    
+>      <display-name>Welcome to Tomcat</display-name>
+>      <description>
+>        Welcome to Tomcat
+>      </description>
+>      <servlet>
+>        <servlet-name>loginServlet</servlet-name>
+>        <servlet-class>com.phc.servlet.LoginServlet</servlet-class>
+>      </servlet>
+>      <servlet-mapping>
+>        <servlet-name>loginServlet</servlet-name>
+>        <url-pattern>/login</url-pattern>
+>      </servlet-mapping>
+>    </web-app>
+>    ```
+>
+> 5. 页面显示效果
+>
+>    ![](pictures/servlet/HttpServletRequest/request请求转发登录.png)
+
+
 
