@@ -2,6 +2,8 @@
 
 推荐笔记：[JavaWeb学习笔记(全)(狂神)_程序猿tu的博客-CSDN博客_web笔记](https://blog.csdn.net/qq_41171409/article/details/123553501)
 
+推荐视频：[javaweb-01：web的基本概念_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV12J411M7Sj?p=1)
+
 ## 一、web的基本概念
 
 ### 1.1 前言
@@ -1390,7 +1392,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                            
+>                                        
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1398,7 +1400,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                            
+>                                        
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1414,7 +1416,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                            
+>                                        
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1641,7 +1643,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->       
+>                   
 >    //...
 >    ```
 
@@ -1722,7 +1724,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
 >
 >    ```xml
->   <!--注册servlet-->
+>     <!--注册servlet-->
 >    <servlet>
 >        <servlet-name>downloadFile</servlet-name>
 >        <servlet-class>com.phc.servlet.FileServlet</servlet-class>
@@ -1818,7 +1820,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >    2. `javaweb-01-servlet\response-01\src\main\webapp\WEB-INF\web.xml`
 >
 >    ```xml
->   <!--图片验证码-->
+>     <!--图片验证码-->
 >    <servlet>
 >        <servlet-name>verificationCode</servlet-name>
 >        <servlet-class>com.phc.servlet.ImageServlet</servlet-class>
@@ -2159,5 +2161,239 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ![](pictures/servlet/HttpServletRequest/request请求转发登录.png)
 
+## 10.9 Cookie
+
+### 10.9.1 如何建立有效会话
+**会话：**用户打开一个浏览器，点击了很多超链接，访问了多个web资源，关闭浏览器，这个过程可以称之为会话。
+
+**有状态会话：**一个同学曾经来过教室，下次再来的教室的时候，我们会知道这个同学，曾经来过，称之为有状态会话。
+
+1. 例子：你怎么证明你是西开的学生？
+
+   你 西开
+
+   （1）发票：西开给你开发票
+   （2）学校登记：西开标记你过来了
+   类比：一个网站，怎么证明你来过？
+
+   客户端 服务器
+
+   （1）服务端给客户端一个 信件，客户端下次访问服务端带上信件就可以；cookie
+   （2）服务器登记你过来了，下次你来的时候我来匹配你。session
+
+2. 拓展：
+
+   http是一个无状态的协议
+
+   什么是无状态：就是说这次请求和上一次请求没有任何关系，互不认识。这种无状态的好处是快速。坏处是假如我们想要把www.zhihu.com/login.html和www.zhihu.com/index.html关联起来，必须使用某些手段和工具
+
+### 10.9.2 会话保持的两种技术
+
+**cookie**
+
+- 客户端技术（响应，请求）
+
+**session**
+
+- 服务端技术，利用这个技术，我们可以保存用户的会话信息，我们可以把信息或者数据放在session中。
+
+常见场景：
+
+- 网站登录之后，你下次不用再登录了，第二次访问直接就上去了。
+
+### 10.9.3 Cookie详解
+
+> 1. 从请求中拿到`cookie`信息
+>
+> 2. 服务器响应给客户端`cookie`
+>
+>    ```java
+>    Cookie[] cookies = req.getCookies();//获取cookie
+>    cookie.getName();//获取cookie中的key
+>    cookie.getValue();//获取cookie中的value
+>    Cookie cookie = new Cookie("lastLoginTime", "" + System.currentTimeMillis());//新建一个cookie
+>    cookie.setMaxAge(24*60*60);//设置cookie的有效期
+>    resp.addCookie(cookie);//响应给客户端一个cookie
+>    ```
+>
+>    **cookie：一般会保存在本地的用户目录下/AppData下**
+>
+>    
+>
+> 3. 一个网站cookie是否存在上限
+>
+>    >  一个cookie只能保存一个信息
+>    > 一个web站点可以给浏览器发送多个cookie，每个web站点最多存放20个cookie（ 不同的浏览器会有所不同）
+>    > cookie大小有限制4kb
+>    > 浏览器上限是300个cookie
+>
+> 4. 删除cookie的方法
+>
+>    > 不设置有效期，关闭浏览器，自动失效
+>    > 设置有效期时间为0
+
+### 10.9.4 Demo实例
+
+#### 1. 保存用户上一次的访问时间和中文字符
+
+> 1. 文件结构
+>
+>    ![](pictures/Cookie/文件结构.png)
+>
+> 2. `javaweb-session-cookie\cookie_demo\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <servlet>
+>        <servlet-name>getLastLoginTime</servlet-name>
+>        <servlet-class>com.phc.servlet.Demo01</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>getLastLoginTime</servlet-name>
+>        <url-pattern>/getLastLoginTime</url-pattern>
+>    </servlet-mapping>
+>    ```
+>
+> 3. `javaweb-session-cookie\cookie_demo\src\main\java\com\phc\servlet\Demo01.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.Cookie;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    import java.io.PrintWriter;
+>    import java.net.URLDecoder;
+>    import java.net.URLEncoder;
+>    import java.util.Date;
+>    
+>    /**
+>     * @FileName Demo01.java
+>     * @Description 保存用户上一次的访问时间和中文字符
+>     * @Author phc
+>     * @date 2022/12/9 10:21
+>     * @Version 1.0
+>     */
+>    public class Demo01 extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            // 解决中文乱码
+>            req.setCharacterEncoding("utf-8");
+>            resp.setCharacterEncoding("utf-8");
+>            resp.setHeader("Content-type","text/html;charset=utf-8");
+>    
+>            PrintWriter out = resp.getWriter();
+>            // cookie 服务器从客户端中获取
+>            Cookie[] cookies = req.getCookies(); // 这里返回一个数组,说明请求中可能含有多个cookie
+>    
+>            // 判断cookie是否为空
+>            if(cookies!=null) {
+>                //cookie存在
+>                for(int i=0;i<cookies.length;i++) {
+>                    Cookie cookie = cookies[i];
+>                    // 获取cookie的键
+>                    if(cookie.getName().equals("lastLoginTime")) {
+>                        // 获取cookie的值
+>                        String time = cookie.getValue();
+>                        // 将字符串时间转换成日期标准格式
+>                        Date date = new Date(Long.parseLong(time));
+>                        out.write("你上次访问的时间:"+date.toString()+"\n");
+>                    }else if(cookie.getName().equals("name")){
+>                        //中文字符解码
+>                        String name = URLDecoder.decode(cookie.getValue());
+>                        out.write("姓名:"+name+"\n");
+>                    }else {
+>                        String key = cookie.getName();
+>                        String value = cookie.getValue();
+>                        out.write(key+":"+value+"\n");
+>                    }
+>                }
+>            }else {
+>                //cookie不存在
+>                out.write("这是你第一次访问本站");
+>            }
+>            // 服务器给客户端响应一个cookie
+>            Cookie cookie1 = new Cookie("lastLoginTime", System.currentTimeMillis()+"");// 键值对
+>            // 向cookie中传入中文,需要先进行编码,在取出时进行解码
+>            Cookie cookie2 = new Cookie("name", URLEncoder.encode("小超"));
+>            // 设置cookie的有效期为1天
+>            cookie1.setMaxAge(24*60*60);
+>            cookie2.setMaxAge(24*60*60);
+>            resp.addCookie(cookie1);
+>            resp.addCookie(cookie2);
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+> 4. 页面显示效果
+>
+>    ![](pictures/Cookie/Demo01.png)
+
+#### 2. 设置cookie有效期为0,达到删除相应cookie的目的
+
+> 1. `javaweb-session-cookie\cookie_demo\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <servlet>
+>        <servlet-name>deleteCookie</servlet-name>
+>        <servlet-class>com.phc.servlet.Demo02</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>deleteCookie</servlet-name>
+>        <url-pattern>/deleteNameCookie</url-pattern>
+>    </servlet-mapping>
+>    ```
+>
+> 2. `javaweb-session-cookie\cookie_demo\src\main\java\com\phc\servlet\Demo02.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.Cookie;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName Demo02.java
+>     * @Description 设置cookie有效期为0,达到删除相应cookie的目的
+>     * @Author phc
+>     * @date 2022/12/9 11:15
+>     * @Version 1.0
+>     */
+>    public class Demo02 extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            //设置键为需要删除的cookie,达到覆盖之前cookie为name的目的
+>            Cookie deleteNameCookie = new Cookie("name", "");
+>            //设置cookie有效期为0,则cookie自动失效,并删除
+>            deleteNameCookie.setMaxAge(0);
+>            resp.addCookie(deleteNameCookie);
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
 
 
+
+
+
+
+
+
+
+1. 存储位置不同: cookie是保存在客户端, session是保存服务器端 2. 存储数据量大小不同: cookie存储是有限的, 不超过4KB, seesion是无限制的;
+2. cookie是客户端session是服务端cookie存于客户端记录web服务器的信息session是记录客户机的信息SessionID是sessi的唯一标识使用session可以记录客户端的请求等
