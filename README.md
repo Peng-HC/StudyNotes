@@ -1392,7 +1392,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                                        
+>                                                       
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1400,7 +1400,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                                        
+>                                                       
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1416,7 +1416,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                                        
+>                                                       
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1643,7 +1643,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->                   
+>                                  
 >    //...
 >    ```
 
@@ -2355,14 +2355,14 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ```java
 >    package com.phc.servlet;
->    
+>                   
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.Cookie;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->    
+>                   
 >    /**
 >     * @FileName Demo02.java
 >     * @Description 设置cookie有效期为0,达到删除相应cookie的目的
@@ -2379,7 +2379,7 @@ void sendRedirect(String var1) throws IOException;
 >            deleteNameCookie.setMaxAge(0);
 >            resp.addCookie(deleteNameCookie);
 >        }
->    
+>                   
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -2387,13 +2387,465 @@ void sendRedirect(String var1) throws IOException;
 >    }
 >    ```
 
+### 10.10 Session（重点）
 
+#### 10.10.1 什么是session
 
+>（1）服务器会给每一个用户（浏览器）创建一个session对象；
+>
+>（2）一个session独占一个浏览器，只要浏览器没有关闭，session就存在；
+>
+>（3）用户登录之后，整个网站它都可以访问。eg：保存用户的信息；保存购物车的信息
 
+#### 10.10.2 实例
 
+> 1. 文件结构
+>
+>    ![](pictures/session/文件结构.png)
+>
+> 2. `javaweb-session-cookie\session_demo\src\main\java\com\phc\servlet\Demo01.java`
+>
+>    （1）在session中存放name值
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.*;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName Demo01.java
+>     * @Description 在session中存放name值
+>     * @Author phc
+>     * @date 2022/12/11 9:13
+>     * @Version 1.0
+>     */
+>    public class Demo01 extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            // 解决页面中文乱码问题
+>            req.setCharacterEncoding("utf-8");
+>            resp.setCharacterEncoding("utf-8");
+>            resp.setContentType("text/html;charset=utf-8");
+>    
+>            // 得到session
+>            HttpSession session = req.getSession();
+>            // 给session中存东西
+>            session.setAttribute("name","小超");
+>            // 获取sessionID
+>            String sessionId = session.getId();
+>    
+>            // 判断session是不是新创建的
+>            if(session.isNew()) {
+>                resp.getWriter().write("session创建成功,sessionID:"+sessionId);
+>            } else {
+>                resp.getWriter().write("session已经在服务器中存在了,sessionID:"+sessionId);
+>            }
+>            // session创建的时候做了什么事情
+>            //        Cookie cookie = new Cookie("JESSIONID", sessionId);
+>            //        resp.addCookie(cookie);
+>        }
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+>    （2）取出session中存放的name值
+>
+>    ```java
+>    // 得到session
+>    HttpSession session = req.getSession();
+>    // 取出name值
+>    String name = (String)session.getAttribute("name");
+>    resp.getWriter().write("name:"+name);
+>    ```
+>
+>    （3）手动注销会话session
+>
+>    ```java
+>    HttpSession session = req.getSession();
+>    session.removeAttribute("name"); //移除name属性
+>    session.invalidate();   //注销当前会话
+>    ```
+>
+> 3. `javaweb-session-cookie\session_demo\src\main\webapp\WEB-INF\web.xml`
+>
+>    ```xml
+>    <!--在session中创建name属性-->
+>    <servlet>
+>        <servlet-name>demo01</servlet-name>
+>        <servlet-class>com.phc.servlet.Demo01</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>demo01</servlet-name>
+>        <url-pattern>/demo01</url-pattern>
+>    </servlet-mapping>
+>    
+>    <!--在session中获取name属性-->
+>    <servlet>
+>        <servlet-name>demo02</servlet-name>
+>        <servlet-class>com.phc.servlet.Demo02</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>demo02</servlet-name>
+>        <url-pattern>/demo02</url-pattern>
+>    </servlet-mapping>
+>    
+>    <!--注销当前session会话-->
+>    <servlet>
+>        <servlet-name>demo03</servlet-name>
+>        <servlet-class>com.phc.servlet.Demo03</servlet-class>
+>    </servlet>
+>    <servlet-mapping>
+>        <servlet-name>demo03</servlet-name>
+>        <url-pattern>/demo03</url-pattern>
+>    </servlet-mapping>
+>    
+>    <!--在web配置端设置session失效时间-->
+>    <session-config>
+>        <!--失效时间以分钟为单位-->
+>        <session-timeout>1</session-timeout>
+>    </session-config>
+>    ```
+>
+> 4. 页面显示结果：
+>
+>    ![](pictures/session/页面显示结果demo01.png)
+>
+>    ![页面显示结果demo02](pictures/session/页面显示结果demo02.png)
 
+#### 10.10.3 session和cookie的区别
 
+> 1. cookie是把用户的数据写给浏览器，浏览器保存（可以保存多个）；
+> 2. session是把用户的数据写到用户独占的session中，服务器端保存（保存重要的信息，避免服务器的资源浪费）；
+> 3. session由服务器创建
+>
+> ![](pictures/session/session和cookie的区别1.png)
+>
+> ![session和cookie的区别2](pictures/session/session和cookie的区别2.png)
+>
+> session使用场景：
+>
+> - 保存一个登录用户的信息
+> - 购物车信息
+> - 在整个网站中经常会使用的数据，我们会将它保存在session中
 
+### 10.11 JSP
 
-1. 存储位置不同: cookie是保存在客户端, session是保存服务器端 2. 存储数据量大小不同: cookie存储是有限的, 不超过4KB, seesion是无限制的;
-2. cookie是客户端session是服务端cookie存于客户端记录web服务器的信息session是记录客户机的信息SessionID是sessi的唯一标识使用session可以记录客户端的请求等
+> 1. java server pages ：Java服务页端面，也和servlet一样，用于动态Web技术！
+>
+> 2. 最大的特点
+>
+>    （1）写JSP就像在写HTML
+>
+>    （2）区别：
+>
+>    * HTML只给用户提供静态的数据
+>    * JSP页面中可以嵌入Java代码，为用户提供动态数据
+>
+> ![](pictures/JSP/jsp原理.png)
+
+#### 10.11.1 JSP原理
+
+> 思路：jsp到底怎么执行的？
+>
+> - 代码层面看不出啥（jsp）
+>
+> - 服务器内部工作
+>
+>   tomcat中有一个work目录
+>
+>   ![](pictures/JSP/被编译成一个java程序.png)
+>
+>   idea使用tomcat的时候会在idea的tomcat中生成一个work目录
+>
+>   ![](pictures/JSP/IDEA的tomcat工作空间.png)
+>
+>   发现jsp页面被转变成了java程序
+>
+>   ```path
+>   C:\Users\PengH\AppData\Local\JetBrains\IntelliJIdea2021.3\tomcat\c9b1a7e0-7b78-460b-9642-3ced6045f66f\work\Catalina\localhost\session_demo_war\org\apache\jsp
+>   ```
+>
+>   ![IDEA下编译的java程序](pictures/JSP/IDEA下编译的java程序.png)
+>
+>   **浏览器向服务器发送请求，不管访问什么资源，其实都是在访问servlet**
+>
+>   jsp最终也会被转换为一个java类
+>
+>   jsp本质上就是一个servlet
+>
+>   ```java
+>   // 初始化
+>   public void _jspInit() {
+>   }
+>   //销毁
+>   public void _jspDestroy() {
+>   }
+>   //jspService
+>   public void _jspService(final javax.servlet.http.HttpServletRequest request, final javax.servlet.http.HttpServletResponse response) {
+>       ...
+>   }
+>   ```
+>
+>     1. 全局pom.xml中导入jar包jasper-runtime
+>
+>      ```xml
+>     <!--向pom.xml中导入jar包jasper-runtime-->
+>      <!-- https://mvnrepository.com/artifact/tomcat/jasper-runtime -->
+>      <dependency>
+>          <groupId>tomcat</groupId>
+>          <artifactId>jasper-runtime</artifactId>
+>          <version>5.5.23</version>
+>      </dependency>
+>      ```
+> 
+>   2. java程序中导入HttpJspBase包
+>
+>           ```java
+>     import org.apache.jasper.runtime.HttpJspBase;
+>      ```
+>
+>   3. 查看HttpJspBase类
+> 
+>      ```java
+>     public abstract class HttpJspBase extends HttpServlet implements HttpJspPage {
+>               protected HttpJspBase() {
+>         }
+>          ...
+>     }
+>      ```
+> 
+
+#### 10.11.2 index_jsp.java源码分析
+
+1. **在jsp页面中只要是java代码就会原封不动的输出，若是html页面，则通过out.write（）输出**
+
+   ![](pictures/JSP/html页面通过out输出.png)
+
+2. 内置的一些对象
+
+   ```java
+   // 这些对象我们可以在jsp页面中直接使用
+   final javax.servlet.jsp.PageContext pageContext;	//页面上下文
+   javax.servlet.http.HttpSession session = null;	//session
+   final javax.servlet.ServletContext application;	//applicationContext
+   final javax.servlet.ServletConfig config;	//config
+   javax.servlet.jsp.JspWriter out = null;	//out打印
+   final java.lang.Object page = this;	//当前页面
+   javax.servlet.jsp.JspWriter _jspx_out = null;
+   javax.servlet.jsp.PageContext _jspx_page_context = null;
+   final javax.servlet.http.HttpServletRequest request;	//请求
+   final javax.servlet.http.HttpServletResponse response;	//响应
+   ```
+
+   
+
+3. 输出页面前所做的事情
+
+   ```java
+   //初始化
+   response.setContentType("text/html;charset=UTF-8");
+   pageContext = _jspxFactory.getPageContext(this, request, response,
+                                             null, true, 8192, true);
+   _jspx_page_context = pageContext;
+   application = pageContext.getServletContext();
+   config = pageContext.getServletConfig();
+   session = pageContext.getSession();
+   out = pageContext.getOut();
+   _jspx_out = out;
+   ```
+
+4. 实例测试
+
+   （1）`javaweb-session-cookie\session_demo\src\main\webapp\hello.jsp`
+
+   ```jsp
+   <%--
+     Created by IntelliJ IDEA.
+     User: PengHC
+     Date: 2022/12/14
+     Time: 10:58
+     To change this template use File | Settings | File Templates.
+   --%>
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>你好</title>
+   </head>
+   <body>
+   <%--输入java代码--%>
+   <%
+       String name="小超";
+   %>
+   <h1>name:<%= name %></h1>
+   </body>
+   </html>
+   
+   ```
+
+   （2）hello.jsp先转换成java后编译成class文件的结果：
+
+   ```java
+   /*
+    * Generated by the Jasper component of Apache Tomcat
+    * Version: Apache Tomcat/9.0.69
+    * Generated at: 2022-12-14 03:09:05 UTC
+    * Note: The last modified time of this file was set to
+    *       the last modified time of the source file after
+    *       generation to assist with modification tracking.
+    */
+   package org.apache.jsp;
+   
+   import javax.servlet.*;
+   import javax.servlet.http.*;
+   import javax.servlet.jsp.*;
+   
+   public final class hello_jsp extends org.apache.jasper.runtime.HttpJspBase
+       implements org.apache.jasper.runtime.JspSourceDependent,
+                    org.apache.jasper.runtime.JspSourceImports {
+   
+     private static final javax.servlet.jsp.JspFactory _jspxFactory =
+             javax.servlet.jsp.JspFactory.getDefaultFactory();
+   
+     private static java.util.Map<java.lang.String,java.lang.Long> _jspx_dependants;
+   
+     private static final java.util.Set<java.lang.String> _jspx_imports_packages;
+   
+     private static final java.util.Set<java.lang.String> _jspx_imports_classes;
+   
+     static {
+       _jspx_imports_packages = new java.util.HashSet<>();
+       _jspx_imports_packages.add("javax.servlet");
+       _jspx_imports_packages.add("javax.servlet.http");
+       _jspx_imports_packages.add("javax.servlet.jsp");
+       _jspx_imports_classes = null;
+     }
+   
+     private volatile javax.el.ExpressionFactory _el_expressionfactory;
+     private volatile org.apache.tomcat.InstanceManager _jsp_instancemanager;
+   
+     public java.util.Map<java.lang.String,java.lang.Long> getDependants() {
+       return _jspx_dependants;
+     }
+   
+     public java.util.Set<java.lang.String> getPackageImports() {
+       return _jspx_imports_packages;
+     }
+   
+     public java.util.Set<java.lang.String> getClassImports() {
+       return _jspx_imports_classes;
+     }
+   
+     public javax.el.ExpressionFactory _jsp_getExpressionFactory() {
+       if (_el_expressionfactory == null) {
+         synchronized (this) {
+           if (_el_expressionfactory == null) {
+             _el_expressionfactory = _jspxFactory.getJspApplicationContext(getServletConfig().getServletContext()).getExpressionFactory();
+           }
+         }
+       }
+       return _el_expressionfactory;
+     }
+   
+     public org.apache.tomcat.InstanceManager _jsp_getInstanceManager() {
+       if (_jsp_instancemanager == null) {
+         synchronized (this) {
+           if (_jsp_instancemanager == null) {
+             _jsp_instancemanager = org.apache.jasper.runtime.InstanceManagerFactory.getInstanceManager(getServletConfig());
+           }
+         }
+       }
+       return _jsp_instancemanager;
+     }
+   
+     public void _jspInit() {
+     }
+   
+     public void _jspDestroy() {
+     }
+   
+     public void _jspService(final javax.servlet.http.HttpServletRequest request, final javax.servlet.http.HttpServletResponse response)
+         throws java.io.IOException, javax.servlet.ServletException {
+   
+       if (!javax.servlet.DispatcherType.ERROR.equals(request.getDispatcherType())) {
+         final java.lang.String _jspx_method = request.getMethod();
+         if ("OPTIONS".equals(_jspx_method)) {
+           response.setHeader("Allow","GET, HEAD, POST, OPTIONS");
+           return;
+         }
+         if (!"GET".equals(_jspx_method) && !"POST".equals(_jspx_method) && !"HEAD".equals(_jspx_method)) {
+           response.setHeader("Allow","GET, HEAD, POST, OPTIONS");
+           response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "JSP 只允许 GET、POST 或 HEAD。Jasper 还允许 OPTIONS");
+           return;
+         }
+       }
+   
+       final javax.servlet.jsp.PageContext pageContext;
+       javax.servlet.http.HttpSession session = null;
+       final javax.servlet.ServletContext application;
+       final javax.servlet.ServletConfig config;
+       javax.servlet.jsp.JspWriter out = null;
+       final java.lang.Object page = this;
+       javax.servlet.jsp.JspWriter _jspx_out = null;
+       javax.servlet.jsp.PageContext _jspx_page_context = null;
+   
+   
+       try {
+         response.setContentType("text/html;charset=UTF-8");
+         pageContext = _jspxFactory.getPageContext(this, request, response,
+         			null, true, 8192, true);
+         _jspx_page_context = pageContext;
+         application = pageContext.getServletContext();
+         config = pageContext.getServletConfig();
+         session = pageContext.getSession();
+         out = pageContext.getOut();
+         _jspx_out = out;
+   
+         out.write("\r\n");
+         out.write("\r\n");
+         out.write("<html>\r\n");
+         out.write("<head>\r\n");
+         out.write("    <title>你好</title>\r\n");
+         out.write("</head>\r\n");
+         out.write("<body>\r\n");
+         out.write("\r\n");
+         out.write('\r');
+         out.write('\n');
+   
+       String name="小超";
+   
+         out.write("\r\n");
+         out.write("\r\n");
+         out.write("name:");
+         out.print( name );
+         out.write("\r\n");
+         out.write("</body>\r\n");
+         out.write("</html>\r\n");
+       } catch (java.lang.Throwable t) {
+         if (!(t instanceof javax.servlet.jsp.SkipPageException)){
+           out = _jspx_out;
+           if (out != null && out.getBufferSize() != 0)
+             try {
+               if (response.isCommitted()) {
+                 out.flush();
+               } else {
+                 out.clearBuffer();
+               }
+             } catch (java.io.IOException e) {}
+           if (_jspx_page_context != null) _jspx_page_context.handlePageException(t);
+           else throw new ServletException(t);
+         }
+       } finally {
+         _jspxFactory.releasePageContext(_jspx_page_context);
+       }
+     }
+   }
+   ```
+
+   
+
+   
