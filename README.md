@@ -1392,7 +1392,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                                                       
+>                                                                
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1400,7 +1400,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                                                       
+>                                                                
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1416,7 +1416,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                                                       
+>                                                                
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1643,7 +1643,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->                                  
+>                                           
 >    //...
 >    ```
 
@@ -2355,14 +2355,14 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ```java
 >    package com.phc.servlet;
->                   
+>                            
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.Cookie;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->                   
+>                            
 >    /**
 >     * @FileName Demo02.java
 >     * @Description 设置cookie有效期为0,达到删除相应cookie的目的
@@ -2379,7 +2379,7 @@ void sendRedirect(String var1) throws IOException;
 >            deleteNameCookie.setMaxAge(0);
 >            resp.addCookie(deleteNameCookie);
 >        }
->                   
+>                            
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -2606,17 +2606,17 @@ void sendRedirect(String var1) throws IOException;
 >   2. java程序中导入HttpJspBase包
 >
 >           ```java
->     import org.apache.jasper.runtime.HttpJspBase;
+>       import org.apache.jasper.runtime.HttpJspBase;
 >      ```
 >
 >   3. 查看HttpJspBase类
 > 
 >      ```java
->     public abstract class HttpJspBase extends HttpServlet implements HttpJspPage {
+>       public abstract class HttpJspBase extends HttpServlet implements HttpJspPage {
 >               protected HttpJspBase() {
 >         }
 >          ...
->     }
+>       }
 >      ```
 > 
 
@@ -2846,6 +2846,294 @@ void sendRedirect(String var1) throws IOException;
    }
    ```
 
-   
+#### 10.11.3 jsp基础语法和指令
 
+> 任何语言都有自己的语法，java有，jsp作为java技术的一种应用，它拥有一些自己扩充的语法（了解，知道即可），java所有语法都支持。
+>
+> 1. 新建一个`maven`模板项目`javaweb-jsp`
+>
+> 2. 文件结构
+>
+>    ![](pictures/JSP/页面结构.png)
+>
+> 3. `pom.xml`导入依赖包
+>
+>    ```xml
+>    <dependencies>
+>        <!--servlet依赖-->
+>        <dependency>
+>            <groupId>javax.servlet</groupId>
+>            <artifactId>javax.servlet-api</artifactId>
+>            <version>4.0.1</version>
+>            <!--取消作用域-->
+>            <!--<scope>provided</scope>-->
+>        </dependency>
+>       
+>        <!--向pom.xml中导入jar包jasper-runtime-->
+>        <!-- https://mvnrepository.com/artifact/tomcat/jasper-runtime -->
+>        <dependency>
+>            <groupId>tomcat</groupId>
+>            <artifactId>jasper-runtime</artifactId>
+>            <version>5.5.23</version>
+>        </dependency>
+>       
+>        <!--jsp依赖-->
+>        <dependency>
+>            <groupId>javax.servlet.jsp</groupId>
+>            <artifactId>javax.servlet.jsp-api</artifactId>
+>            <version>2.3.3</version>
+>        </dependency>
+>       
+>        <!--jsp表达式的依赖-->
+>        <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
+>        <dependency>
+>            <groupId>javax.servlet.jsp.jstl</groupId>
+>            <artifactId>jstl-api</artifactId>
+>            <version>1.2</version>
+>        </dependency>
+>       
+>        <!--standard标签库-->
+>        <dependency>
+>            <groupId>taglibs</groupId>
+>            <artifactId>standard</artifactId>
+>            <version>1.1.2</version>
+>        </dependency>
+>    </dependencies>
+>    ```
+
+##### 1. jsp表达式和jsp脚本片段
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: PengH
+  Date: 2022/12/18
+  Time: 10:34
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>标题</title>
+</head>
+<body>
+
+<h1>你好,JSP</h1>
+<%--这是一个注释--%>
+
+<%--
+JSP表达式
+作用:用来将程序输出到客户端
+格式:<%= 变量或者表达式>
+--%>
+北京时间:<%= new java.util.Date()%>
+<hr />
+
+<%--jsp脚本片段--%>
+<%
+    int sum=0;
+    for(int i=0;i<=100;i++) {
+        sum+=i;
+    }
+    out.println("0-100求和后的值为:"+sum);
+%>
+
+<%--jsp与html标签相互嵌套--%>
+<%
+    for(int i=0;i<5;i++) {
+%>
+<p><%=(i+1)%>.我是嵌套进jsp的html标签</p>
+<%
+    }
+%>
+
+</body>
+</html>
+```
+
+![](pictures/JSP/jsp表达式和jsp脚本片段.png)
+
+##### 2. jsp全局声明
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>JSP全局声明</title>
+</head>
+<body>
+
+<%!
+    static {
+        System.out.println("servlet loading...");
+    }
+    private String global_var = "PHC";
+    public void print() {
+        System.out.println("进入了print方法体");
+    }
+%>
+
+<%
+    // 调用print方法
+    print();
+%>
+
+<%--这是JSP的注释--%>
+<!--这是HTML标签的注释-->
+
+</body>
+</html>
+```
+
+jsp声明，会被编译到jsp生成java代码的类中！其他的，就会被生成到_jspService方法中！
+
+![](pictures/JSP/jsp声明1.png)
+
+![jsp声明2](pictures/JSP/jsp声明2.png)
+
+在jsp，嵌入java代码即可
+
+```jsp
+<%%>
+<%=%>
+<%!%>
+<%--注释--%>
+```
+
+jsp注释和html注释的区别
+
+```jsp
+<%--这是JSP的注释--%>
+<!--这是HTML标签的注释-->
+```
+
+![](pictures/JSP/jsp注释和html注释的区别.png)
+
+发现：jsp的注释，不会在客户端显示，html会！
+
+##### 3. JSP指令
+
+错误页面定制
+
+`javaweb-jsp\src\main\webapp\WEB-INF\web.xml`
+
+```xml
+<error-page>
+    <location>/error/switch_to_404.jsp</location>
+    <error-code>404</error-code>
+</error-page>
+<error-page>
+    <location>/error/switch_to_500.jsp</location>
+    <error-code>500</error-code>
+</error-page>
+```
+
+（1）服务器500错误
+
+`javaweb-jsp\src\main\webapp\Demo02.jsp`
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>JSP指令</title>
+   </head>
+   <body>
    
+   <%
+       // 会报告500错误(服务器端出错)
+       int error = 1/0;
+   %>
+   
+   </body>
+   </html>
+   ```
+
+`javaweb-jsp\src\main\webapp\error\switch_to_500.jsp`
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>服务器崩溃</title>
+</head>
+<body>
+<img src="./img/error_500.png" alt="页面500">
+</body>
+</html>
+```
+
+![](pictures/JSP/服务器500错误.png)
+
+（2）页面找不到404错误
+
+![](pictures/JSP/页面找不到404.png)
+
+#### 10.11.4 引用公共页面
+
+1. `Footer.jsp`
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>页面尾部</title>
+   </head>
+   <body>
+   <h1>我是Footer</h1>
+   </body>
+   </html>
+   ```
+
+2. `Header.jsp`
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>页面头部</title>
+   </head>
+   <body>
+   <h1>我是Header</h1>
+   </body>
+   </html>
+   ```
+
+3. `javaweb-jsp\src\main\webapp\Demo03.jsp`
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>使用公共页面</title>
+   </head>
+   
+   <body>
+   <%--
+   %@include会将两个页面合二为一,需要注意页面合并后的冲突(比如两个页面都定义了int i = 10,这种会报错)
+   --%>
+   <%@include file="common_pages/Header.jsp"%>
+   <h1>网页主体</h1>
+   <%@include file="common_pages/Footer.jsp"%>
+   
+   
+   <%--jsp标签
+   jsp:include 拼接页面,本质还是三个独立的文件,推荐使用这种,这种不会出现上面的int i=10冲突的情况,因为本质还是三个页面
+   --%>
+   <jsp:include page="../common_pages/Header.jsp" />
+   <h1>网页主体</h1>
+   <jsp:include page="../common_pages/Footer.jsp"></jsp:include>
+   
+   </body>
+   </html>
+   ```
+
+   ![](pictures/JSP/引用公共页面.png)
+
+   分析一下源码
+
+   ![](pictures/JSP/引用公共页面源码1.png)
+
+   ![引用公共页面源码2](pictures/JSP/引用公共页面源码2.png)
+
+4. 
