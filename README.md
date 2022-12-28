@@ -1392,7 +1392,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                                                                
+>                                                                            
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1400,7 +1400,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                                                                
+>                                                                            
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1416,7 +1416,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                                                                
+>                                                                            
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1643,7 +1643,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->                                           
+>                                                       
 >    //...
 >    ```
 
@@ -2355,14 +2355,14 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ```java
 >    package com.phc.servlet;
->                            
+>                                        
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.Cookie;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->                            
+>                                        
 >    /**
 >     * @FileName Demo02.java
 >     * @Description 设置cookie有效期为0,达到删除相应cookie的目的
@@ -2379,7 +2379,7 @@ void sendRedirect(String var1) throws IOException;
 >            deleteNameCookie.setMaxAge(0);
 >            resp.addCookie(deleteNameCookie);
 >        }
->                            
+>                                        
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -2868,7 +2868,7 @@ void sendRedirect(String var1) throws IOException;
 >            <!--取消作用域-->
 >            <!--<scope>provided</scope>-->
 >        </dependency>
->       
+>                   
 >        <!--向pom.xml中导入jar包jasper-runtime-->
 >        <!-- https://mvnrepository.com/artifact/tomcat/jasper-runtime -->
 >        <dependency>
@@ -2876,14 +2876,14 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jasper-runtime</artifactId>
 >            <version>5.5.23</version>
 >        </dependency>
->       
+>                   
 >        <!--jsp依赖-->
 >        <dependency>
 >            <groupId>javax.servlet.jsp</groupId>
 >            <artifactId>javax.servlet.jsp-api</artifactId>
 >            <version>2.3.3</version>
 >        </dependency>
->       
+>                   
 >        <!--jsp表达式的依赖-->
 >        <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
 >        <dependency>
@@ -2891,7 +2891,7 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jstl-api</artifactId>
 >            <version>1.2</version>
 >        </dependency>
->       
+>                   
 >        <!--standard标签库-->
 >        <dependency>
 >            <groupId>taglibs</groupId>
@@ -3137,3 +3137,1036 @@ jsp注释和html注释的区别
    ![引用公共页面源码2](pictures/JSP/引用公共页面源码2.png)
 
 4. 
+
+### 10.12 9大内置对象
+
+> 1. PageContext【存东西】
+> 2. Request 【存东西】
+> 3. Response
+> 4. Session【存东西】
+> 5. Application（ServletContext）【存东西】
+> 6. config（ServletConfig）
+> 7. out
+> 8. page 【基本用不到】
+> 9. exception
+
+1. 新建pageDemo1.jsp
+
+   ```jsp
+   <%--
+     Created by IntelliJ IDEA.
+     User: PengHC
+     Date: 2022/12/24
+     Time: 11:19
+     To change this template use File | Settings | File Templates.
+   --%>
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>四大存取类</title>
+   </head>
+   <body>
+   <%--内置对象--%>
+   <%
+       pageContext.setAttribute("name1","phc"); //保存的数据只在一个页面内有效
+       request.setAttribute("name2","hxj"); //保存的数据只在一次请求中有效，请求转发会携带这个数据
+       session.setAttribute("name3","phw"); //保存的数据只在一次会话中有效，从打开浏览器到关闭浏览器
+       application.setAttribute("name4","ljy"); //保存的数据只在服务器中有效，从打开服务器到关闭服务器
+   %>
+   
+   <%--脚本片段中的java代码，会原封不动地被生成到xxx.jsp.java中，
+   要求：这里面的代码必须保证Java语法的准确性
+   --%>
+   <%
+       //从pageContext中取出数据,这里我们通过寻找的方式来。
+       //作用域从底层到高层:
+       String name1 = (String) pageContext.getAttribute("name1");
+       String name2 = (String) pageContext.getAttribute("name2");
+       String name3 = (String) pageContext.getAttribute("name3");
+       String name4 = (String) pageContext.getAttribute("name4");
+       String name5 = (String) pageContext.getAttribute("name5"); //不存在
+   %>
+   
+   <%--使用EL表达式输出 ${}--%>
+   <h1>取出的值为:</h1>
+   <h3>${name1}</h3>
+   <h3>${name2}</h3>
+   <h3>${name3}</h3>
+   <h3>${name4}</h3>
+   <h3>${name5}</h3>
+   </body>
+   </html>
+   ```
+
+   ![](pictures/JSP/pageContext.png)
+
+   
+
+   request:客户端向服务器发送请求，产生的数据，用户看完就没用了，比如：新闻
+
+   session:客户端向服务器发送请求，产生的数据，用户用完一会还有用，比如：购物车
+
+   application:客户端向服务器发送请求，产生的数据，一个用户用完了，其他用户还可能使用，比如：聊天数据
+
+2. 
+
+### 10.13 JSP标签、JSTL标签、EL表达式
+
+导包
+
+```xml
+<!--jsp表达式的依赖-->
+<!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
+<dependency>
+    <groupId>javax.servlet.jsp.jstl</groupId>
+    <artifactId>jstl-api</artifactId>
+    <version>1.2</version>
+</dependency>
+
+<!--standard标签库-->
+<dependency>
+    <groupId>taglibs</groupId>
+    <artifactId>standard</artifactId>
+    <version>1.1.2</version>
+</dependency>
+</dependencies>
+```
+
+EL表达式（express language）：`${ }`
+
+> - **获取数据**
+> - **执行运算**
+> - **获取web开发的常用对象**
+> - 调用java方法
+
+#### 10.13.1 JSP标签
+
+1. `JSP_tag01.jsp`
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>Demo01</title>
+   </head>
+   <body>
+   <h1>我是JSP标签页面01</h1>
+   
+   <%--<jsp:include page="../Demo01.jsp"></jsp:include>--%>
+   
+   <%--页面转发请求--%>
+   <jsp:forward page="/JSP_tag02.jsp">
+       <%--请求转发时携带参数--%>
+       <%--http://localhost:8080/JSP_tag01.jsp?name=phc&age=18--%>
+       <jsp:param name="name" value="phc"/>
+       <jsp:param name="age" value="18"/>
+   </jsp:forward>
+   
+   </body>
+   </html>
+   ```
+
+   
+
+2. `JSP_tag02.jsp`
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>Demo02</title>
+   </head>
+   <body>
+   <h1>我是JSP标签页面02</h1>
+   <%--取出参数--%>
+   名字:<%=request.getParameter("name")%>
+   年龄:<%=request.getParameter("age")%>
+   </body>
+   </html>
+   ```
+
+![](pictures/JSP/jsp标签.png)
+
+#### 10.13.2 JSTL标签
+
+jstl标签库的使用就是为了弥补html标签的不足；它自定义了许多标签，可以供我们使用，标签的功能和java代码一样！
+
+> - 核心标签（掌握）
+> - 格式化标签
+> - sql标签
+> - xml标签
+
+核心标签如下：
+
+![](pictures/JSP/核心标签.png)
+
+JSTL标签库使用步骤：
+
+- 引用对应的taglib
+
+- 使用其中的方法
+
+- 在tomcat也需要引入jstl的包，否则会报错
+
+  ```java
+  org.apache.jasper.compiler.DefaultErrorHandler.jspError(DefaultErrorHandler.java:55)
+  ```
+
+1. core_if.jsp
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <%--引入jstl核心标签库，我们才能使用jstl标签 core--%>
+   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+   <html>
+   <head>
+       <title>core if</title>
+   </head>
+   <body>
+   <h4>if测试</h4>
+   <form action="core_if.jsp" method="get">
+       <%--
+       el表达式获取表单中的数据
+       ${param.参数名}
+       --%>
+       <input type="text" name="username" value="${param.username}">
+       <input type="submit" value="登录">
+   </form>
+   
+   <%--判断如果提交的用户名是管理员，则登录成功--%>
+   <c:if test="${param.username=='admin'}" var="isAdmin">
+       <c:out value="管理员欢迎您！"></c:out>
+   </c:if>
+   
+   <c:out value="${isAdmin}"></c:out>
+   
+   </body>
+   </html>
+   ```
+
+2. coreWhen.jsp
+
+   ```jsp
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+   <html>
+   <head>
+       <title>Title</title>
+   </head>
+   <body>
+   <c:set var="score" value="100"/>
+   <c:choose>
+       <c:when test="${score>90}">优秀</c:when>
+       <c:when test="${score>80}">良好</c:when>
+       <c:when test="${score>60}">一般</c:when>
+       <c:otherwise>不及格</c:otherwise>
+   </c:choose>
+   </body>
+   </html>
+   ```
+
+   
+
+3. coreForeach.jsp
+
+   ```jsp
+   <%@ page import="java.util.ArrayList" %>
+   <%@ page import="java.util.List" %>
+   <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+   <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+   <html>
+   <head>
+       <title>Title</title>
+   </head>
+   <body>
+   
+   <%
+       List<String> personList = new ArrayList<>();
+       personList.add(0, "张三");
+       personList.add(1, "李四");
+       personList.add(2, "王五");
+       personList.add(3, "赵六");
+       request.setAttribute("personList", personList);
+   %>
+   
+   <%--
+   var 每一次遍历出来的变量
+   item 要遍历的对象
+   begin 开始下标
+   end 结束下标
+   step  步长
+   --%>
+   <c:forEach var="person" items="${personList}">
+       <c:out value="${person}"/><br/>
+   </c:forEach>
+   <hr/>
+   <c:forEach var="person" items="${personList}" begin="1" end="3" step="2">
+       <c:out value="${person}"/><br/>
+   </c:forEach>
+   
+   </body>
+   </html>
+   ```
+
+   
+
+4. 
+
+## 十一、JavaBean
+
+实体类
+
+javaBean特定的写法：
+
+- 必须要有一个无参构造
+- 属性必须私有化
+- 必须有对应的get/set方法
+
+一般用来和数据库字段做映射
+
+ORM：对象关系映射
+
+- 表—>类
+- 字段—>属性
+- 行记录–>对象
+
+| id   | name | age  | address |
+| ---- | ---- | ---- | ------- |
+| 1    | 张三 | 18   | 杭州    |
+| 2    | 李四 | 17   | 南京    |
+| 3    | 王五 | 18   | 漳州    |
+
+```java
+public class Student {
+    private int id;
+    private String name;
+    private int age;
+    private String address;
+    //...省了构造方法和get set 方法
+}
+```
+
+对应的`JavaBean.jsp`
+
+```jsp
+<%@ page import="com.phc.pojo.People" %><%--
+  Created by IntelliJ IDEA.
+  User: PengH
+  Date: 2022/12/25
+  Time: 10:21
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>JavaBean</title>
+</head>
+<body>
+
+<%
+//    People people = new People();
+//    people.setId(1);
+//    people.setAge(18);
+//    people.setName("phc");
+//    people.setAddress("杭州");
+%>
+
+<jsp:useBean id="people" class="com.phc.pojo.People" scope="page" />
+<%--设置属性--%>
+<jsp:setProperty name="people" property="id" value="1" />
+<jsp:setProperty name="people" property="age" value="18" />
+<jsp:setProperty name="people" property="name" value="phc" />
+<jsp:setProperty name="people" property="address" value="杭州" />
+<%--获取属性--%>
+ID:<jsp:getProperty name="people" property="id"/>
+年龄:<jsp:getProperty name="people" property="age"/>
+姓名:<jsp:getProperty name="people" property="name"/>
+地址:<jsp:getProperty name="people" property="address"/>
+
+</body>
+</html>
+```
+
+## 十二、MVC三层架构
+
+什么是MVC：**Model View Controller** 模型视图控制器
+
+### 12.1 以前的架构
+
+用户直接访问控制层，控制层就可以直接操作数据库；
+
+![](pictures/MVC/以前的架构.png)
+
+```java
+servlet--CRUD-->数据库
+ 弊端：程序十分臃肿，不利于维护  
+ servlet的代码中：处理请求、响应、视图跳转、处理JDBC、处理业务代码、处理逻辑代码
+
+ 架构：没有什么是加一层解决不了的！
+ 程序猿调用
+ ↑
+ JDBC （实现该接口）
+ ↑
+ Mysql Oracle SqlServer ....（不同厂商）
+```
+
+### 12.2 MVC三层架构
+
+**Model**
+
+业务处理 ：业务逻辑（Service）
+
+数据持久层：CRUD （Dao - 数据持久化对象）
+
+**View**
+
+展示数据
+
+提供链接发起Servlet请求 （a，form，img…）
+
+**Controller （Servlet）**
+
+接收用户的请求 ：（req：请求参数、Session信息….）
+
+交给业务层处理对应的代码
+
+控制视图的跳转
+
+![](pictures/MVC/MVC三层架构.png)
+
+```java
+登录--->接收用户的登录请求--->处理用户的请求（获取用户登录的参数，username，password）---->交给业务层处理登录业务（判断用户名密码是否正确：事务）--->Dao层查询用户名和密码是否正确-->数据库
+```
+
+## 十三、过滤器Filter（重点）
+
+比如 Shiro安全框架技术就是用Filter来实现的
+
+Filter：过滤器 ，用来过滤网站的数据；
+
+- 处理中文乱码
+- 登录验证….
+
+（比如用来过滤网上骂人的话）
+
+![](pictures/过滤器Filter/过滤器.png)
+
+Filter开发步骤：
+
+1. 导包
+
+2. 编写过滤器
+
+   （1）包不要导入错误了
+
+   ```java
+   import javax.servlet.Filter;
+   ```
+
+   ![](pictures/过滤器Filter/实现接口.png)
+
+   （2）实现Filter接口，重写对应的方法即可
+
+   （3）web.xml中配置过滤器
+
+#### 13.1 过滤器Filter解决中文乱码
+
+> 1. `javaweb-filter\pom.xml`
+>
+>    ```xml
+>    <?xml version="1.0" encoding="UTF-8"?>
+>    <project xmlns="http://maven.apache.org/POM/4.0.0"
+>             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+>        <modelVersion>4.0.0</modelVersion>
+>    
+>        <groupId>com.phc</groupId>
+>        <artifactId>javaweb-filter</artifactId>
+>        <version>1.0-SNAPSHOT</version>
+>    
+>        <properties>
+>            <maven.compiler.source>16</maven.compiler.source>
+>            <maven.compiler.target>16</maven.compiler.target>
+>        </properties>
+>    
+>        <dependencies>
+>            <dependency>
+>                <groupId>javax.servlet</groupId>
+>                <artifactId>javax.servlet-api</artifactId>
+>                <version>4.0.1</version>
+>                <!--取消作用域-->
+>                <!--<scope>provided</scope>-->
+>            </dependency>
+>    
+>            <!--向pom.xml中导入jar包jasper-runtime-->
+>            <!-- https://mvnrepository.com/artifact/tomcat/jasper-runtime -->
+>            <dependency>
+>                <groupId>tomcat</groupId>
+>                <artifactId>jasper-runtime</artifactId>
+>                <version>5.5.23</version>
+>            </dependency>
+>    
+>            <!--jsp依赖-->
+>            <dependency>
+>                <groupId>javax.servlet.jsp</groupId>
+>                <artifactId>javax.servlet.jsp-api</artifactId>
+>                <version>2.3.3</version>
+>            </dependency>
+>    
+>            <!--jsp表达式的依赖-->
+>            <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
+>            <dependency>
+>                <groupId>javax.servlet.jsp.jstl</groupId>
+>                <artifactId>jstl-api</artifactId>
+>                <version>1.2</version>
+>            </dependency>
+>    
+>            <!--standard标签库-->
+>            <dependency>
+>                <groupId>taglibs</groupId>
+>                <artifactId>standard</artifactId>
+>                <version>1.1.2</version>
+>            </dependency>
+>    
+>            <!--连接数据库-->
+>            <dependency>
+>                <groupId>mysql</groupId>
+>                <artifactId>mysql-connector-java</artifactId>
+>                <version>5.1.47</version>
+>            </dependency>
+>        </dependencies>
+>    
+>    </project>
+>    ```
+>
+> 2. `javaweb-filter\src\main\java\com\phc\filter\CharacterEcodingFilter.java`
+>
+>    ```java
+>    package com.phc.filter;
+>    
+>    import javax.servlet.*;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName CharacterEcodingFilter.java
+>     * @Description 过滤器:将req和resp的编码设置为utf-8
+>     * @Author phc
+>     * @date 2022/12/25 11:31
+>     * @Version 1.0
+>     */
+>    public class CharacterEcodingFilter implements Filter {
+>    
+>    //     初始化
+>    //     web服务器启动的时候，初始化就会执行
+>        @Override
+>        public void init(FilterConfig filterConfig) throws ServletException {
+>            System.out.println("CharacterEcodingFilter 初始化......");
+>        }
+>    
+>    //    chain 链
+>    //     1.过滤器中的代码，在过滤特定请求的时候会执行
+>    //     2.必须让过滤器继续通行
+>    //     chain.doFilter(request, response);
+>        @Override
+>        public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+>            servletRequest.setCharacterEncoding("GBK");
+>            servletResponse.setCharacterEncoding("GBK");
+>            System.out.println("doFilter执行前......");
+>            //让请求继续走，如果不写程序到这里就被拦截停止了！
+>            filterChain.doFilter(servletRequest,servletResponse);
+>            System.out.println("doFilter执行后......");
+>        }
+>    
+>        /**
+>         * 销毁
+>         * web服务器关闭的时候，过滤器会销毁
+>         */
+>        @Override
+>        public void destroy() {
+>            System.out.println("CharacterEcodingFilter 销毁......");
+>        }
+>    }
+>    ```
+>
+> 3. `javaweb-filter\src\main\java\com\phc\servlet\ShowServlet.java`
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName
+>     * @Description 显示中文
+>     * @Author phc
+>     * @date 2022/12/25 11:42
+>     * @Version 1.0
+>     */
+>    public class ShowServlet extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            resp.getWriter().write("你好，我是phc！");
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    
+>    }
+>    ```
+>
+> 4. `javaweb-filter\web\WEB-INF\web.xml`
+>
+>    ```xml
+>    <?xml version="1.0" encoding="UTF-8"?>
+>    <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+>             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+>             version="4.0">
+>        
+>        <servlet>
+>            <servlet-name>servlet_demo</servlet-name>
+>            <servlet-class>com.phc.servlet.ShowServlet</servlet-class>
+>        </servlet>
+>        <servlet-mapping>
+>            <servlet-name>servlet_demo</servlet-name>
+>            <url-pattern>/show</url-pattern>
+>        </servlet-mapping>
+>        <servlet-mapping>
+>            <servlet-name>servlet_demo</servlet-name>
+>            <url-pattern>/servlet/show</url-pattern>
+>        </servlet-mapping>
+>    
+>        <filter>
+>            <filter-name>character_encoding</filter-name>
+>            <filter-class>com.phc.filter.CharacterEcodingFilter</filter-class>
+>        </filter>
+>        <filter-mapping>
+>            <filter-name>character_encoding</filter-name>
+>        <!--只要访问/servlet/*就会走过滤器-->
+>            <url-pattern>/servlet/*</url-pattern>
+>        </filter-mapping>
+>    </web-app>
+>    ```
+>
+> 5. 文件结构
+>
+>    ![](pictures/过滤器Filter/文件结构.png)
+
+#### 13.2 过滤器Filter实现权限拦截
+
+> 1. 文件结构
+>
+>    ![](pictures/过滤器Filter/文件结构2.png)
+>
+> 2. `JSP`文件
+>
+>    （1）`javaweb-filter\web\login.jsp`
+>
+>    登录页面
+>
+>    ```jsp
+>    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+>    <html>
+>    <head>
+>        <title>登录页面</title>
+>    </head>
+>    <body>
+>    <form action="${pageContext.request.contextPath}/servlet/login" method="post">
+>        用户名:<input type="text" name="username">
+>        <br />
+>        <input type="submit">
+>    </form>
+>    </body>
+>    </html>
+>    ```
+>
+>    ![](pictures/过滤器Filter/登录页面.png)
+>
+>    （2）`javaweb-filter\web\error.jsp`
+>
+>    登录失败页面
+>
+>    ```jsp
+>    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+>    <html>
+>    <head>
+>        <title>登录失败</title>
+>    </head>
+>    <body>
+>    <h1>登录失败！用户名错误,你没有权限</h1>
+>    <a href="login.jsp">返回登录页面</a>
+>    </body>
+>    </html>
+>    ```
+>
+>    ![](pictures/过滤器Filter/登录失败页面.png)
+>
+>    （3）`javaweb-filter\web\sys\success.jsp`
+>
+>    登录成功页面
+>
+>    ```jsp
+>    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+>    <html>
+>    <head>
+>        <title>登录成功</title>
+>    </head>
+>    <body>
+>    <h1>恭喜你,登录成功</h1>
+>    <h1>主页</h1>
+>    <a href="${pageContext.request.contextPath}/servlet/logout">注销用户</a>
+>    </body>
+>    </html>
+>    ```
+>
+>    ![](pictures/过滤器Filter/登录成功页面.png)
+>
+> 3. `web.xml`文件
+>
+>    `javaweb-filter\web\WEB-INF\web.xml`
+>
+>    ```xml
+>    <?xml version="1.0" encoding="UTF-8"?>
+>    <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+>             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+>             version="4.0">
+>        <servlet>
+>            <servlet-name>login</servlet-name>
+>            <servlet-class>com.phc.servlet.LoginServlet</servlet-class>
+>        </servlet>
+>        <servlet-mapping>
+>            <servlet-name>login</servlet-name>
+>            <url-pattern>/servlet/login</url-pattern>
+>        </servlet-mapping>
+>        
+>        <servlet>
+>            <servlet-name>logout</servlet-name>
+>            <servlet-class>com.phc.servlet.LogoutServlet</servlet-class>
+>        </servlet>
+>        <servlet-mapping>
+>            <servlet-name>logout</servlet-name>
+>            <url-pattern>/servlet/logout</url-pattern>
+>        </servlet-mapping>
+>    
+>        <filter>
+>            <filter-name>sys_filter</filter-name>
+>            <filter-class>com.phc.filter.SysFilter</filter-class>
+>        </filter>
+>        <filter-mapping>
+>            <filter-name>sys_filter</filter-name>
+>            <!--只要访问/sys/*就会走过滤器-->
+>            <url-pattern>/sys/*</url-pattern>
+>        </filter-mapping>
+>    </web-app>
+>    ```
+>
+> 4. 常量存储
+>
+>    `javaweb-filter\src\main\java\com\phc\utils\Constant.java`
+>
+>    ```java
+>    package com.phc.utils;
+>    
+>    /**
+>     * @FileName
+>     * @Description 存储常量
+>     * @Author phc
+>     * @date 2022/12/28 11:41
+>     * @Version 1.0
+>     */
+>    public class Constant {
+>        public static final String USER_SESSION = "USER_SESSION";
+>    }
+>    ```
+>
+> 5. java代码
+>
+>    （1）`javaweb-filter\src\main\java\com\phc\servlet\LoginServlet.java`
+>
+>    处理登录的用户信息
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import com.phc.utils.Constant;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName LoginServlet.java
+>     * @Description 处理登录事件
+>     * @Author phc
+>     * @date 2022/12/28 11:40
+>     * @Version 1.0
+>     */
+>    public class LoginServlet extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            String username = req.getParameter("username");
+>            if("phc".equals(username)) {
+>                // 登录成功
+>                req.getSession().setAttribute(Constant.USER_SESSION,req.getSession().getId());
+>                // 跳转(重定向)
+>                resp.sendRedirect(req.getContextPath()+"/sys/success.jsp");
+>            } else {
+>                // 登录失败
+>                resp.sendRedirect(req.getContextPath()+"/error.jsp");
+>            }
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+>    （2）`javaweb-filter\src\main\java\com\phc\servlet\LogoutServlet.java`
+>
+>    处理用户注销页面
+>
+>    ```java
+>    package com.phc.servlet;
+>    
+>    import com.phc.utils.Constant;
+>    
+>    import javax.servlet.ServletException;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName LogoutServlet.java
+>     * @Description 用户注销界面
+>     * @Author phc
+>     * @date 2022/12/28 19:05
+>     * @Version 1.0
+>     */
+>    public class LogoutServlet extends HttpServlet {
+>        @Override
+>        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            Object attribute = req.getSession().getAttribute(Constant.USER_SESSION);
+>            if(attribute!=null) {
+>                //用户已经登录
+>                req.getSession().removeAttribute(Constant.USER_SESSION);
+>            }
+>    
+>            //跳转到登录页面
+>            resp.sendRedirect(req.getContextPath()+"/login.jsp");
+>        }
+>    
+>        @Override
+>        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+>            doGet(req, resp);
+>        }
+>    }
+>    ```
+>
+>    （3）`javaweb-filter\src\main\java\com\phc\filter\SysFilter.java`
+>
+>    过滤器：过滤掉直接向登录成功页面发起的非法请求
+>
+>    ```java
+>    package com.phc.filter;
+>    
+>    import com.phc.utils.Constant;
+>    
+>    import javax.servlet.*;
+>    import javax.servlet.http.HttpServlet;
+>    import javax.servlet.http.HttpServletRequest;
+>    import javax.servlet.http.HttpServletResponse;
+>    import javax.swing.*;
+>    import java.io.IOException;
+>    
+>    /**
+>     * @FileName SysFilter.java
+>     * @Description 过滤掉直接向登录成功页面发起的非法请求
+>     * @Author phc
+>     * @date 2022/12/28 19:30
+>     * @Version 1.0
+>     */
+>    public class SysFilter implements Filter {
+>        @Override
+>        public void init(FilterConfig filterConfig) throws ServletException {
+>            Filter.super.init(filterConfig);
+>        }
+>    
+>        @Override
+>        public void destroy() {
+>            Filter.super.destroy();
+>        }
+>    
+>        @Override
+>        public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+>            //强转为HttpServlet类型
+>            HttpServletRequest req = (HttpServletRequest)servletRequest;
+>            HttpServletResponse resp = (HttpServletResponse)servletResponse;
+>            if(req.getSession().getAttribute(Constant.USER_SESSION)==null) {
+>                resp.sendRedirect(req.getContextPath()+"/error.jsp");
+>            }
+>            filterChain.doFilter(servletRequest,servletResponse);
+>        }
+>    }
+>    ```
+
+## 十四、监听器Listener
+
+> 实现一个监听器的接口(有N种)
+>
+> 1. 实现一个监听器接口
+>
+>    ```java
+>    package com.phc.pojo;
+>    
+>    import javax.servlet.ServletContext;
+>    import javax.servlet.http.HttpSessionEvent;
+>    import javax.servlet.http.HttpSessionListener;
+>    
+>    /**
+>     * @FileName OnLineCountListener.java
+>     * @Description 监听上网人数
+>     * @Author phc
+>     * @date 2022/12/28 9:49
+>     * @Version 1.0
+>     */
+>    public class OnLineCountListener implements HttpSessionListener{
+>        /**
+>         * 创建session监听，一旦销毁session就会触发这个事件
+>         */
+>        @Override
+>        public void sessionCreated(HttpSessionEvent se) {
+>            System.out.println(se.getSession().getId());
+>            ServletContext servletContext = se.getSession().getServletContext();
+>            Integer onLineCount = (Integer) servletContext.getAttribute("onLineCount");
+>    //        onLineCount++;
+>            if(onLineCount==null) {
+>                // 第一次创建
+>                onLineCount = new Integer(1);
+>    
+>            } else {
+>                onLineCount = new Integer(onLineCount+1);
+>            }
+>            servletContext.setAttribute("onLineCount",onLineCount);
+>        }
+>    
+>        /**
+>         * 销毁session监听，一旦销毁session就会触发这个事件
+>         */
+>        @Override
+>        public void sessionDestroyed(HttpSessionEvent se) {
+>            ServletContext servletContext = se.getSession().getServletContext();
+>            Integer onLineCount = (Integer)servletContext.getAttribute("onLineCount");
+>            if(onLineCount==null) {
+>                //第一次创建
+>                onLineCount = new Integer(0);
+>            } else {
+>                onLineCount = new Integer(onLineCount-1);
+>            }
+>            servletContext.setAttribute("onLineCount",onLineCount);
+>            se.getSession().invalidate();
+>        }
+>    
+>        /**
+>         * session的销毁
+>         * 1.手动销毁  getSession().invalidate();
+>         * 2.自动销毁
+>         *     <session-config>
+>         *         <session-timeout>1</session-timeout>
+>         *     </session-config>
+>         *
+>         * 3.关闭服务器
+>         */
+>    }
+>    ```
+>
+> 2. 配置监听器`web.xml`
+>
+>    ```xml
+>    <!--注册监听器-->
+>    <listener>
+>        <listener-class>com.phc.pojo.OnLineCountListener</listener-class>
+>    </listener>
+>    ```
+>
+> 3. 页面验证
+>
+>    ```jsp
+>    <%--
+>      Created by IntelliJ IDEA.
+>      User: PengH
+>      Date: 2022/12/28
+>      Time: 10:04
+>      To change this template use File | Settings | File Templates.
+>    --%>
+>    <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+>    <html>
+>    <head>
+>        <title>监听上网人数</title>
+>    </head>
+>    <body>
+>    <h1>当前共有<span><%=this.getServletConfig().getServletContext().getAttribute("onLineCount")%>人</span></h1>
+>    </body>
+>    </html>
+>    ```
+>
+>    ![](pictures/监听器/监听页面人数.png)
+>
+> 4. 监听器：GUI编程中经常使用
+>
+>    ```java
+>    package com.phc.listener;
+>    
+>    import java.awt.*;
+>    import java.awt.event.WindowAdapter;
+>    import java.awt.event.WindowEvent;
+>    
+>    /**
+>     * @FileName TestPanel.java
+>     * @Description 窗口监听事件
+>     * @Author phc
+>     * @date 2022/12/28 10:28
+>     * @Version 1.0
+>     */
+>    public class TestPanel{
+>        public static void main(String[] args) {
+>            Frame frame = new Frame("新年快乐");//新建一个窗体
+>            Panel panel = new Panel(null);//面板
+>            frame.setLayout(null);//设置窗体的布局
+>    
+>            frame.setBounds(300,300,500,500);
+>            frame.setBackground(new Color(255,0,0));//设置背景颜色
+>    
+>            panel.setBounds(50,50,300,300);
+>            panel.setBackground(new Color(0,0,255));//设置背景颜色
+>    
+>            frame.add(panel);
+>            frame.setVisible(true);
+>    
+>            //添加关闭窗口的事件监听
+>            frame.addWindowListener(new WindowAdapter() {
+>                @Override
+>                public void windowClosing(WindowEvent e) {
+>                    System.exit(0);
+>                    super.windowClosing(e);
+>                }
+>            });
+>        }
+>    }
+>    ```
+
+
+
+
+
