@@ -1392,7 +1392,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                                                                            
+>                                                                               
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1400,7 +1400,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                                                                            
+>                                                                               
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1416,7 +1416,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                                                                            
+>                                                                               
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1643,7 +1643,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->                                                       
+>                                                          
 >    //...
 >    ```
 
@@ -2355,14 +2355,14 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ```java
 >    package com.phc.servlet;
->                                        
+>                                           
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.Cookie;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->                                        
+>                                           
 >    /**
 >     * @FileName Demo02.java
 >     * @Description 设置cookie有效期为0,达到删除相应cookie的目的
@@ -2379,7 +2379,7 @@ void sendRedirect(String var1) throws IOException;
 >            deleteNameCookie.setMaxAge(0);
 >            resp.addCookie(deleteNameCookie);
 >        }
->                                        
+>                                           
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -2868,7 +2868,7 @@ void sendRedirect(String var1) throws IOException;
 >            <!--取消作用域-->
 >            <!--<scope>provided</scope>-->
 >        </dependency>
->                   
+>                      
 >        <!--向pom.xml中导入jar包jasper-runtime-->
 >        <!-- https://mvnrepository.com/artifact/tomcat/jasper-runtime -->
 >        <dependency>
@@ -2876,14 +2876,14 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jasper-runtime</artifactId>
 >            <version>5.5.23</version>
 >        </dependency>
->                   
+>                      
 >        <!--jsp依赖-->
 >        <dependency>
 >            <groupId>javax.servlet.jsp</groupId>
 >            <artifactId>javax.servlet.jsp-api</artifactId>
 >            <version>2.3.3</version>
 >        </dependency>
->                   
+>                      
 >        <!--jsp表达式的依赖-->
 >        <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
 >        <dependency>
@@ -2891,7 +2891,7 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jstl-api</artifactId>
 >            <version>1.2</version>
 >        </dependency>
->                   
+>                      
 >        <!--standard标签库-->
 >        <dependency>
 >            <groupId>taglibs</groupId>
@@ -3894,15 +3894,15 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.servlet;
->    
+>       
 >    import com.phc.utils.Constant;
->    
+>       
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->    
+>       
 >    /**
 >     * @FileName LoginServlet.java
 >     * @Description 处理登录事件
@@ -3924,7 +3924,7 @@ Filter开发步骤：
 >                resp.sendRedirect(req.getContextPath()+"/error.jsp");
 >            }
 >        }
->    
+>       
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -3938,15 +3938,15 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.servlet;
->    
+>       
 >    import com.phc.utils.Constant;
->    
+>       
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->    
+>       
 >    /**
 >     * @FileName LogoutServlet.java
 >     * @Description 用户注销界面
@@ -3962,11 +3962,11 @@ Filter开发步骤：
 >                //用户已经登录
 >                req.getSession().removeAttribute(Constant.USER_SESSION);
 >            }
->    
+>       
 >            //跳转到登录页面
 >            resp.sendRedirect(req.getContextPath()+"/login.jsp");
 >        }
->    
+>       
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -3980,16 +3980,16 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.filter;
->    
+>       
 >    import com.phc.utils.Constant;
->    
+>       
 >    import javax.servlet.*;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import javax.swing.*;
 >    import java.io.IOException;
->    
+>       
 >    /**
 >     * @FileName SysFilter.java
 >     * @Description 过滤掉直接向登录成功页面发起的非法请求
@@ -4002,12 +4002,12 @@ Filter开发步骤：
 >        public void init(FilterConfig filterConfig) throws ServletException {
 >            Filter.super.init(filterConfig);
 >        }
->    
+>       
 >        @Override
 >        public void destroy() {
 >            Filter.super.destroy();
 >        }
->    
+>       
 >        @Override
 >        public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 >            //强转为HttpServlet类型
@@ -4127,11 +4127,11 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.listener;
->    
+>       
 >    import java.awt.*;
 >    import java.awt.event.WindowAdapter;
 >    import java.awt.event.WindowEvent;
->    
+>       
 >    /**
 >     * @FileName TestPanel.java
 >     * @Description 窗口监听事件
@@ -4144,16 +4144,16 @@ Filter开发步骤：
 >            Frame frame = new Frame("新年快乐");//新建一个窗体
 >            Panel panel = new Panel(null);//面板
 >            frame.setLayout(null);//设置窗体的布局
->    
+>       
 >            frame.setBounds(300,300,500,500);
 >            frame.setBackground(new Color(255,0,0));//设置背景颜色
->    
+>       
 >            panel.setBounds(50,50,300,300);
 >            panel.setBackground(new Color(0,0,255));//设置背景颜色
->    
+>       
 >            frame.add(panel);
 >            frame.setVisible(true);
->    
+>       
 >            //添加关闭窗口的事件监听
 >            frame.addWindowListener(new WindowAdapter() {
 >                @Override
@@ -4165,6 +4165,278 @@ Filter开发步骤：
 >        }
 >    }
 >    ```
+
+## 十五、JDBC复习
+
+什么是jdbc：java连接数据库！（java database connector）
+
+![](pictures/JDBC复习/JDBC结构.png)
+
+需要jar包的支持：
+
+- java.sql
+- javax.sql
+- mysql-connection-java…（连接驱动）
+
+### 15.1 实验环境搭建
+
+1. `mysql`语句
+
+   ```sql
+   CREATE DATABASE IF NOT EXISTS `jdbc`
+   
+   CREATE TABLE IF NOT EXISTS users(
+   	id INT PRIMARY KEY,
+   	`name` VARCHAR(40),
+   	`password` VARCHAR(40),
+   	email VARCHAR(60),
+   	birthday DATE
+   );
+   
+   INSERT INTO `users` (`id`, `name`, `password`, `email`, `birthday`) VALUES('1','张三','123456','zs@sina.com','2021-07-14');
+   INSERT INTO `users` (`id`, `name`, `password`, `email`, `birthday`) VALUES('2','李四','123456','lisi@sina.com','1981-12-04');
+   INSERT INTO `users` (`id`, `name`, `password`, `email`, `birthday`) VALUES('3','王五','123456','wangwu@sina.com','1982-12-04');
+   INSERT INTO `users` (`id`, `name`, `password`, `email`, `birthday`) VALUES('4','赵六','123456','zhaoliu@sina.com','1987-12-05');
+   INSERT INTO `users` (`id`, `name`, `password`, `email`, `birthday`) VALUES('5','钱七','123456','qianqi@sina.com','2021-07-19');
+   
+   SELECT * FROM `users`
+   ```
+
+   ![](pictures/JDBC复习/users表.png)
+
+2. 导入mysql驱动jar包
+
+   `javaweb-jdbc\pom.xml`
+
+   ```xml
+   <dependencies>
+       <!--mysql的驱动jar包-->
+       <dependency>
+           <groupId>mysql</groupId>
+           <artifactId>mysql-connector-java</artifactId>
+           <version>5.1.47</version>
+       </dependency>
+   </dependencies>
+   ```
+
+3. **idea连接数据库database**
+
+   ![](pictures/JDBC复习/idea连接数据库database.png)
+
+   ![](pictures/JDBC复习/idea连接数据库database2.png)
+
+   ![idea连接数据库database3](pictures/JDBC复习/idea连接数据库database3.png)
+
+   ![idea连接数据库database4(效果)](pictures/JDBC复习/idea连接数据库database4(效果).png)
+
+4. 
+
+### 15.2 编写JDBC的java代码操作数据库
+
+`jdbc`固定步骤：
+
+（1）加载驱动
+
+（2）连接数据库
+
+（3）创建Statement
+
+（4）编写sql
+
+（5）执行sql
+
+（6）关闭连接
+
+```java
+package com.phc.jdbc;
+
+import java.sql.*;
+
+/**
+ * @FileName JdbcTest.java
+ * @Description 编写jdbc
+ * @Author phc
+ * @date 2022/12/29 9:46
+ * @Version 1.0
+ */
+public class JdbcTest {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+        //配置信息
+        //useUnicode=true&characterEncoding=utf-8 解决中文乱码问题
+        String url = "jdbc:mysql://localhost:3306/jdbc?useUnicode=true&characterEncoding=utf-8";
+        String username = "root";
+        String password = "123456";
+
+        //1.加载驱动
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        //2.连接数据库
+        Connection connection = DriverManager.getConnection(url, username, password);
+        //3.向数据库发送SQL的对象Statement:CRUD
+        Statement statement = connection.createStatement();
+        //4.编写SQL语句
+        String sql = "SELECT * FROM `users`";
+        //5.执行SQL语句
+        ResultSet resultSet = statement.executeQuery(sql);
+        while(resultSet.next()) {
+            int id = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            String pwd = resultSet.getString("password");
+            String email = resultSet.getString("email");
+            Object birthday = resultSet.getObject("birthday");
+            System.out.println("id="+id);
+            System.out.println("name="+name);
+            System.out.println("pwd="+pwd);
+            System.out.println("email="+email);
+            System.out.println("birthday="+birthday);
+        }
+
+        //6.关闭连接，释放数据库
+        resultSet.close();
+        statement.close();
+        connection.close();
+    }
+}
+```
+
+![](pictures/JDBC复习/jdbc执行结果.png)
+
+### 15.3 jdbc事务
+
+要么都成功，要么都失败
+
+ACID原则：保证数据的安全
+
+```java
+开启事务
+事务提交  commit()
+事务回滚  rollback()
+关闭事务
+
+转账：
+A:1000
+B:1000
+
+A(900)   ---100-->    B(1100)
+```
+
+#### 1. Junit单元测试
+
+1. 导入依赖
+
+   ```xml
+   <!--用于测试的依赖包-->
+   <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <version>4.13.2</version>
+   </dependency>
+   ```
+
+2. 简单实用
+
+   @Test注解只有在方法上有效，只要加了这个注解的方法，就可以直接运行！
+
+   ```java
+   package com.phc.jdbc;
+   
+   import org.junit.Test;
+   
+   /**
+    * @FileName JdbcTest02.java
+    * @Description 文件创建信息
+    * @Author phc
+    * @date 2022/12/29 15:44
+    * @Version 1.0
+    */
+   public class JdbcTest02 {
+       @Test
+       public void test() {
+           System.out.println("你好,我是个测试方法");
+       }
+   }
+   ```
+
+   ![](pictures/JDBC复习/junit测试.png)
+
+   
+
+#### 2. 新建`account`表并插入数据
+
+   ```sql
+   CREATE TABLE `account`(
+     `id` INT PRIMARY KEY,
+     `name` VARCHAR(50) NOT NULL,
+     `money` FLOAT NOT NULL
+   ) ENGINE=INNODB DEFAULT CHARSET=utf8
+   
+   INSERT INTO `account` (`id`, `name`, `money`) VALUES(1,'A',1000);
+   INSERT INTO `account` (`id`, `name`, `money`) VALUES(2,'B',1000);
+   INSERT INTO `account` (`id`, `name`, `money`) VALUES(3,'C',1000);
+   ```
+
+![](pictures/JDBC复习/新建account表.png)
+
+   #### 3. `sql`实现事务操作
+
+   ```sql
+   start transaction; #开启事务
+   update account set money = money-100 where name = 'A';
+   update account set money = money+100 where name = 'B';
+   
+   commit; #提交事务
+   rollback; #回滚(事务一旦提交就不可以回滚)
+   ```
+
+#### 4. java实现事务操作
+
+   ```java
+   package com.phc.jdbc;
+   import org.junit.Test;
+   import java.sql.*;
+   
+   /**
+    * @FileName JdbcTest02.java
+    * @Description 事务操作
+    * @Author phc
+    * @date 2022/12/29 15:44
+    * @Version 1.0
+    */
+   public class JdbcTest02 {
+       @Test
+       public void test() throws SQLException {
+           //配置信息
+           //useUnicode=true&characterEncoding=utf-8 解决中文乱码问题
+           String url = "jdbc:mysql://localhost:3306/jdbc?useUnicode=true&characterEncoding=utf-8";
+           String username = "root";
+           String password = "123456";
+           Connection connection = null;
+           try {
+               //1.加载驱动
+               Class.forName("com.mysql.cj.jdbc.Driver");
+               //2.连接数据库
+               connection = DriverManager.getConnection(url, username, password);
+               //3.通知数据库开启事务,false为开启
+               connection.setAutoCommit(false);
+               String sql1 = "update account set money = money-100 where name = 'A';";
+               connection.prepareStatement(sql1).executeUpdate();
+               // 制造错误
+               int i=1/0;
+               String sql2 = "update account set money = money+100 where name = 'B';";
+               connection.prepareStatement(sql2).executeUpdate();
+               connection.commit(); //如果以上两条sql语句都执行成功,就提交事务
+               System.out.println("事务提交成功!");
+           } catch (Exception e) {
+               //如果出现异常,就通知数据库回滚事务
+               connection.rollback();
+           } finally {
+               //关闭连接，释放数据库
+               connection.close();
+           }
+       }
+   }
+   ```
+
+
 
 
 
