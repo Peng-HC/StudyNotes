@@ -1392,7 +1392,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                                                                               
+>                                                                                  
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1400,7 +1400,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                                                                               
+>                                                                                  
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1416,7 +1416,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                                                                               
+>                                                                                  
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1643,7 +1643,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->                                                          
+>                                                             
 >    //...
 >    ```
 
@@ -2355,14 +2355,14 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ```java
 >    package com.phc.servlet;
->                                           
+>                                              
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.Cookie;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->                                           
+>                                              
 >    /**
 >     * @FileName Demo02.java
 >     * @Description 设置cookie有效期为0,达到删除相应cookie的目的
@@ -2379,7 +2379,7 @@ void sendRedirect(String var1) throws IOException;
 >            deleteNameCookie.setMaxAge(0);
 >            resp.addCookie(deleteNameCookie);
 >        }
->                                           
+>                                              
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -2868,7 +2868,7 @@ void sendRedirect(String var1) throws IOException;
 >            <!--取消作用域-->
 >            <!--<scope>provided</scope>-->
 >        </dependency>
->                      
+>                         
 >        <!--向pom.xml中导入jar包jasper-runtime-->
 >        <!-- https://mvnrepository.com/artifact/tomcat/jasper-runtime -->
 >        <dependency>
@@ -2876,14 +2876,14 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jasper-runtime</artifactId>
 >            <version>5.5.23</version>
 >        </dependency>
->                      
+>                         
 >        <!--jsp依赖-->
 >        <dependency>
 >            <groupId>javax.servlet.jsp</groupId>
 >            <artifactId>javax.servlet.jsp-api</artifactId>
 >            <version>2.3.3</version>
 >        </dependency>
->                      
+>                         
 >        <!--jsp表达式的依赖-->
 >        <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
 >        <dependency>
@@ -2891,7 +2891,7 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jstl-api</artifactId>
 >            <version>1.2</version>
 >        </dependency>
->                      
+>                         
 >        <!--standard标签库-->
 >        <dependency>
 >            <groupId>taglibs</groupId>
@@ -3894,15 +3894,15 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.servlet;
->       
+>          
 >    import com.phc.utils.Constant;
->       
+>          
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->       
+>          
 >    /**
 >     * @FileName LoginServlet.java
 >     * @Description 处理登录事件
@@ -3924,7 +3924,7 @@ Filter开发步骤：
 >                resp.sendRedirect(req.getContextPath()+"/error.jsp");
 >            }
 >        }
->       
+>          
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -3938,15 +3938,15 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.servlet;
->       
+>          
 >    import com.phc.utils.Constant;
->       
+>          
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->       
+>          
 >    /**
 >     * @FileName LogoutServlet.java
 >     * @Description 用户注销界面
@@ -3962,11 +3962,11 @@ Filter开发步骤：
 >                //用户已经登录
 >                req.getSession().removeAttribute(Constant.USER_SESSION);
 >            }
->       
+>          
 >            //跳转到登录页面
 >            resp.sendRedirect(req.getContextPath()+"/login.jsp");
 >        }
->       
+>          
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -3980,16 +3980,16 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.filter;
->       
+>          
 >    import com.phc.utils.Constant;
->       
+>          
 >    import javax.servlet.*;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import javax.swing.*;
 >    import java.io.IOException;
->       
+>          
 >    /**
 >     * @FileName SysFilter.java
 >     * @Description 过滤掉直接向登录成功页面发起的非法请求
@@ -4002,12 +4002,12 @@ Filter开发步骤：
 >        public void init(FilterConfig filterConfig) throws ServletException {
 >            Filter.super.init(filterConfig);
 >        }
->       
+>          
 >        @Override
 >        public void destroy() {
 >            Filter.super.destroy();
 >        }
->       
+>          
 >        @Override
 >        public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 >            //强转为HttpServlet类型
@@ -4127,11 +4127,11 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.listener;
->       
+>          
 >    import java.awt.*;
 >    import java.awt.event.WindowAdapter;
 >    import java.awt.event.WindowEvent;
->       
+>          
 >    /**
 >     * @FileName TestPanel.java
 >     * @Description 窗口监听事件
@@ -4144,16 +4144,16 @@ Filter开发步骤：
 >            Frame frame = new Frame("新年快乐");//新建一个窗体
 >            Panel panel = new Panel(null);//面板
 >            frame.setLayout(null);//设置窗体的布局
->       
+>          
 >            frame.setBounds(300,300,500,500);
 >            frame.setBackground(new Color(255,0,0));//设置背景颜色
->       
+>          
 >            panel.setBounds(50,50,300,300);
 >            panel.setBackground(new Color(0,0,255));//设置背景颜色
->       
+>          
 >            frame.add(panel);
 >            frame.setVisible(true);
->       
+>          
 >            //添加关闭窗口的事件监听
 >            frame.addWindowListener(new WindowAdapter() {
 >                @Override
@@ -4436,9 +4436,11 @@ A(900)   ---100-->    B(1100)
    }
    ```
 
+## 十六、SMBMS
 
+SMBMS，supermarket bill management system 超市订单管理系统。
 
-
+见**SMBMS超市订单管理系统.md**文件
 
 
 
