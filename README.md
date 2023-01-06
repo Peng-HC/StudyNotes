@@ -1392,7 +1392,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >
 >    ```java
 >    package com.phc.servlet;
->                                                                                  
+>                                                                                     
 >    import javax.servlet.ServletContext;
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
@@ -1400,7 +1400,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
 >    import java.io.PrintWriter;
->                                                                                  
+>                                                                                     
 >    /**
 >     * @FileName GetInitParameters.class
 >     * @Description 获取web.xml的初始化参数
@@ -1416,7 +1416,7 @@ web容器在启动的时候，它会为每个web程序都创建一个对应的se
 >            String url = servletContext.getInitParameter("url");
 >            resp.getWriter().println("url:"+url);
 >        }
->                                                                                  
+>                                                                                     
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -1643,7 +1643,7 @@ web服务器接收到客户端的http请求，针对这个请求，分别创建�
 >         * proxy or gateway.
 >         */
 >    public static final int SC_BAD_GATEWAY = 502;
->                                                             
+>                                                                
 >    //...
 >    ```
 
@@ -2355,14 +2355,14 @@ void sendRedirect(String var1) throws IOException;
 >
 >    ```java
 >    package com.phc.servlet;
->                                              
+>                                                 
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.Cookie;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->                                              
+>                                                 
 >    /**
 >     * @FileName Demo02.java
 >     * @Description 设置cookie有效期为0,达到删除相应cookie的目的
@@ -2379,7 +2379,7 @@ void sendRedirect(String var1) throws IOException;
 >            deleteNameCookie.setMaxAge(0);
 >            resp.addCookie(deleteNameCookie);
 >        }
->                                              
+>                                                 
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -2868,7 +2868,7 @@ void sendRedirect(String var1) throws IOException;
 >            <!--取消作用域-->
 >            <!--<scope>provided</scope>-->
 >        </dependency>
->                         
+>                            
 >        <!--向pom.xml中导入jar包jasper-runtime-->
 >        <!-- https://mvnrepository.com/artifact/tomcat/jasper-runtime -->
 >        <dependency>
@@ -2876,14 +2876,14 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jasper-runtime</artifactId>
 >            <version>5.5.23</version>
 >        </dependency>
->                         
+>                            
 >        <!--jsp依赖-->
 >        <dependency>
 >            <groupId>javax.servlet.jsp</groupId>
 >            <artifactId>javax.servlet.jsp-api</artifactId>
 >            <version>2.3.3</version>
 >        </dependency>
->                         
+>                            
 >        <!--jsp表达式的依赖-->
 >        <!-- https://mvnrepository.com/artifact/javax.servlet.jsp.jstl/jstl-api -->
 >        <dependency>
@@ -2891,7 +2891,7 @@ void sendRedirect(String var1) throws IOException;
 >            <artifactId>jstl-api</artifactId>
 >            <version>1.2</version>
 >        </dependency>
->                         
+>                            
 >        <!--standard标签库-->
 >        <dependency>
 >            <groupId>taglibs</groupId>
@@ -3894,15 +3894,15 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.servlet;
->          
+>             
 >    import com.phc.utils.Constant;
->          
+>             
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->          
+>             
 >    /**
 >     * @FileName LoginServlet.java
 >     * @Description 处理登录事件
@@ -3924,7 +3924,7 @@ Filter开发步骤：
 >                resp.sendRedirect(req.getContextPath()+"/error.jsp");
 >            }
 >        }
->          
+>             
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -3938,15 +3938,15 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.servlet;
->          
+>             
 >    import com.phc.utils.Constant;
->          
+>             
 >    import javax.servlet.ServletException;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import java.io.IOException;
->          
+>             
 >    /**
 >     * @FileName LogoutServlet.java
 >     * @Description 用户注销界面
@@ -3962,11 +3962,11 @@ Filter开发步骤：
 >                //用户已经登录
 >                req.getSession().removeAttribute(Constant.USER_SESSION);
 >            }
->          
+>             
 >            //跳转到登录页面
 >            resp.sendRedirect(req.getContextPath()+"/login.jsp");
 >        }
->          
+>             
 >        @Override
 >        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 >            doGet(req, resp);
@@ -3980,16 +3980,16 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.filter;
->          
+>             
 >    import com.phc.utils.Constant;
->          
+>             
 >    import javax.servlet.*;
 >    import javax.servlet.http.HttpServlet;
 >    import javax.servlet.http.HttpServletRequest;
 >    import javax.servlet.http.HttpServletResponse;
 >    import javax.swing.*;
 >    import java.io.IOException;
->          
+>             
 >    /**
 >     * @FileName SysFilter.java
 >     * @Description 过滤掉直接向登录成功页面发起的非法请求
@@ -4002,12 +4002,12 @@ Filter开发步骤：
 >        public void init(FilterConfig filterConfig) throws ServletException {
 >            Filter.super.init(filterConfig);
 >        }
->          
+>             
 >        @Override
 >        public void destroy() {
 >            Filter.super.destroy();
 >        }
->          
+>             
 >        @Override
 >        public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 >            //强转为HttpServlet类型
@@ -4127,11 +4127,11 @@ Filter开发步骤：
 >
 >    ```java
 >    package com.phc.listener;
->          
+>             
 >    import java.awt.*;
 >    import java.awt.event.WindowAdapter;
 >    import java.awt.event.WindowEvent;
->          
+>             
 >    /**
 >     * @FileName TestPanel.java
 >     * @Description 窗口监听事件
@@ -4144,16 +4144,16 @@ Filter开发步骤：
 >            Frame frame = new Frame("新年快乐");//新建一个窗体
 >            Panel panel = new Panel(null);//面板
 >            frame.setLayout(null);//设置窗体的布局
->          
+>             
 >            frame.setBounds(300,300,500,500);
 >            frame.setBackground(new Color(255,0,0));//设置背景颜色
->          
+>             
 >            panel.setBounds(50,50,300,300);
 >            panel.setBackground(new Color(0,0,255));//设置背景颜色
->          
+>             
 >            frame.add(panel);
 >            frame.setVisible(true);
->          
+>             
 >            //添加关闭窗口的事件监听
 >            frame.addWindowListener(new WindowAdapter() {
 >                @Override
@@ -4442,5 +4442,491 @@ SMBMS，supermarket bill management system 超市订单管理系统。
 
 见**SMBMS超市订单管理系统.md**文件
 
+Layui
+
+## 十七、文件上传
+
+### 17.1 导包
+
+> commons-fileupload-1.4.jar
+>
+> commons-io-2.11.0.jar
+>
+> servlet-api-2.5.jar
+
+`function-expansion\file-upload\pom.xml`
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.phc</groupId>
+    <artifactId>function-expansion</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>file-upload</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!--文件上传导包-->
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <!--servlet-api包-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+### 17.2 `FileServlet.java`
+
+`function-expansion\file-upload\src\main\java\com\phc\servlet\FileServlet.java`
+
+```java
+package com.phc.servlet;
+
+/**
+ * @FileName FileServlet.java
+ * @Description 文件上传信息
+ * @Author phc
+ * @date 2023/1/6 15:55
+ * @Version 1.0
+ */
 
 
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+//import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.UUID;
+
+public class FileServlet extends HttpServlet {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //判断上传的表单是普通表单还是文件表单
+        if (!ServletFileUpload.isMultipartContent(request)) {
+            //终止方法运行，说明这是一个普通的表单，直接返回
+            return;
+        }
+        //创建上传文件的保存路径，建议在web-inf路径下，安全，用户无法直接访问上传的文件
+        String uploadPath = this.getServletContext().getRealPath("/WEB-INF/upload");
+        File uploadFile = new File(uploadPath);
+        if (!uploadFile.exists()) {
+            uploadFile.mkdir();
+        }
+
+        //临时文件
+        //临时路径，假如文件超过了预期的大小，我们就把他放到一个临时文件中，过几天自助删除，或者提醒用户转存为永久
+        String tempPath = this.getServletContext().getRealPath("/WEB-INF/temp");
+        File tempFile = new File(tempPath);
+        if (!tempFile.exists()) {
+            tempFile.mkdir();
+        }
+        //处理上传的文件，一般都需要通过流来获取，我们可以使用request.getInputStream()，原生态的文件上传流获取，十分麻烦
+        //但是我们都是建议使用Apache的文件上传组件来实现，common-fileupload，它需要依赖于commons-io组件
+
+        //1.创建DiskFileItemFactory对象,处理文件路径上传或者大小限制的
+        DiskFileItemFactory factory = createDiskFileItemFactory(tempFile);
+        //2.获取ServletFileUpload
+        ServletFileUpload upload = creatServletFileUpload(factory);
+        //3.处理上传的文件
+        String msg = uploadFile(request, uploadPath, upload);
+
+        //转发
+        request.setAttribute("msg", msg);
+        request.getRequestDispatcher("/info.jsp").forward(request, response);
+    }
+
+    private String uploadFile(HttpServletRequest request, String uploadPath, ServletFileUpload upload) throws IOException {
+        String msg = "";
+        //把前端请求解析，封装成一个FileItem对象，需要从ServletFileUpload对象中获取
+        try {
+            List<FileItem> fileItems = upload.parseRequest(request);
+            for (FileItem fileItem : fileItems) {
+                if (fileItem.isFormField()) {
+                    String fieldName = fileItem.getFieldName();
+                    //处理乱码
+                    String value = fileItem.getString("UTF-8");
+                    System.out.println(fieldName + ":" + value);
+                } else {
+                    //文件
+                    //===========处理文件============
+                    String uploadFileName = fileItem.getName();
+                    System.out.println("uploadFileName:" + uploadFileName);
+                    //可能存在文件名不合法的情况
+                    if (uploadFileName == null || "".equals(uploadFileName.trim())) {
+                        continue;
+                    }
+                    //获取上传的文件名
+                    String fileName = uploadFileName.substring(uploadFileName.lastIndexOf("/") + 1);
+                    //获取文件的后缀名
+                    String fileExtName = uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1);
+                    //如果文件后缀名fileExtName不是我们所需要的，就直接return,不处理，告诉用户文件类型不对
+
+                    //可以使用UUID（统一识别的通用码），保证文件名唯一
+                    //UUID.randomUUID() 随机生一个唯一识别的通用码
+                    //网络从传输中的东西，都需要序列化
+                    //implements java.io.Serializable 标记接口  本地方法栈--》C++
+                    String uuidPath = UUID.randomUUID().toString();
+
+                    //===========存放地址============
+                    String realPath = uploadPath + "/" + uuidPath;
+                    File realPathFile = new File(realPath);
+                    if (!realPathFile.exists()) {
+                        realPathFile.mkdir();
+                    }
+                    //===========文件传输============
+                    InputStream inputStream = fileItem.getInputStream();
+                    FileOutputStream fos = new FileOutputStream(realPath + "/" + fileName);
+                    byte[] buffer = new byte[1024 * 1024];
+                    int len = 0;
+                    while ((len = inputStream.read(buffer)) > 0) {
+                        fos.write(buffer, 0, len);
+                    }
+                    fos.close();
+                    inputStream.close();
+                    msg = "上传成功~";
+                }
+            }
+        } catch (FileUploadException e) {
+            e.printStackTrace();
+            msg = "上传失败~";
+        }
+        return msg;
+    }
+
+    private ServletFileUpload creatServletFileUpload(DiskFileItemFactory factory) {
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        //监听文件上传进度
+        upload.setProgressListener(new ProgressListener() {
+            /**
+             *
+             * @param pBytesRead 已经读取到的文件大小
+             * @param pContentLength 文件总大小
+             * @param pItems
+             */
+            @Override
+            public void update(long pBytesRead, long pContentLength, int pItems) {
+                System.out.println("总大小：" + pContentLength + "已经上传：" + pBytesRead);
+            }
+        });
+        //处理乱码问题
+        upload.setHeaderEncoding("UTF-8");
+        //设置单个文件的最大值
+        upload.setFileSizeMax(1020 * 1024 * 10);
+        //设置总共能够上传文件的大小
+        //1020 = 1kb * 1024 = 1M * 10 = 10M
+        upload.setSizeMax(1020 * 1024 * 10);
+        return upload;
+    }
+
+    private DiskFileItemFactory createDiskFileItemFactory(File tempFile) {
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+        //通过这个工厂设置一个缓冲区，当上传的文件大于这个缓冲区的时候，将他放到临时文件中
+        //缓冲区大小为1M
+        factory.setSizeThreshold(1024 * 1024);
+        //临时目录的保存目录
+        factory.setRepository(tempFile);
+        return factory;
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    }
+}
+```
+
+### 17.3 `web.xml`
+
+`function-expansion\file-upload\web\WEB-INF\web.xml`
+
+```xml 
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+
+    <servlet>
+        <servlet-name>FileServlet</servlet-name>
+        <servlet-class>com.phc.servlet.FileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FileServlet</servlet-name>
+        <url-pattern>/upload.do</url-pattern>
+    </servlet-mapping>
+</web-app>
+```
+
+### 17.4 `index.jsp`
+
+`function-expansion\file-upload\web\index.jsp`
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: PengHC
+  Date: 2023/1/5
+  Time: 20:41
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+  <title>文件上传</title>
+</head>
+<body>
+<%--通过表单上传文件
+    get:文件大小有限制
+    post:文件大小没有限制,推荐
+--%>
+<!--pageContext.request.contextPath:获取服务器路径-->
+<form action="${pageContext.request.contextPath}/upload.do" enctype="multipart/form-data" method="post">
+  上传用户:<input type="text" name="username"> </br>
+  <p><input type="file" name="upload_file1"></p>
+  <p><input type="file" name="upload_file2"></p>
+  <p></p><input type="submit" name="submit"> | <input type="reset" name="reset"></p>
+</form>
+</body>
+</html>
+```
+
+
+
+## 十八、邮件发送
+
+### 18.1 导包
+
+> activation-1.1.1.jar
+>
+> mail-1.4.7.jar
+
+`function-expansion\mail-send\pom.xml`
+
+```xml
+<!--邮件发送导包-->
+<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+<dependency>
+    <groupId>javax.activation</groupId>
+    <artifactId>activation</artifactId>
+    <version>1.1.1</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+<dependency>
+    <groupId>javax.mail</groupId>
+    <artifactId>mail</artifactId>
+    <version>1.4.7</version>
+</dependency>
+```
+
+### 18.2 `MailDemo01.java`
+
+`function-expansion\mail-send\src\main\java\com\phc\MailDemo01.java`
+
+```java
+package com.phc;
+
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
+
+/**
+ * @FileName MailDemo01.java
+ * @Description 简单邮件发送
+ * @Author phc
+ * @date 2023/1/6 19:57
+ * @Version 1.0
+ */
+public class MailDemo01 {
+    public static void main(String[] args) throws Exception {
+
+        Properties properties = new Properties();
+        //设置QQ邮件服务器
+        properties.setProperty("mail.host", "smtp.qq.com");
+        //邮件发送协议
+        properties.setProperty("mail.transport.protocol", "smtp");
+        //需要验证用户名密码
+        properties.setProperty("mail.smtp.auth", "true");
+
+        //关于QQ邮箱，还需要设置SSL加密，加上以下以下代码即可，其他邮箱不需要！
+        MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        sf.setTrustAllHosts(true);
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.socketFactory", sf);
+
+        //使用javaMail发送邮件的5个步骤
+        //1.创建定义整个应用程序所需的环境信息的Session对象
+
+        //QQ才有该步骤,其他邮箱不用!
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                //发件人邮件用户名、授权码
+                return new PasswordAuthentication("2550705615@qq.com", "授权码");
+            }
+        });
+        //--开启debug模式，这样就可以查看到程序发送email的运行状态
+        session.setDebug(true);
+        //2.通过session得到transport对象
+        Transport ts = session.getTransport();
+        //3.使用邮箱的用户名和授权码连上邮件服务器
+        ts.connect("smtp.qq.com", "2550705615@qq.com", "授权码");
+        //4.创建邮件
+        MimeMessage message = new MimeMessage(session);
+        //--邮件的发件人
+        message.setFrom(new InternetAddress("2550705615@qq.com"));
+        //--邮件的收件人
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress("2550705615@qq.com"));
+        //--邮件的标题
+        message.setSubject("hello");
+        //--邮件的文本内容
+        message.setContent("<h1 style='color: red'>你好啊</h1>", "text/html;charset=UTF-8");
+        //5.发送邮件
+        ts.sendMessage(message, message.getAllRecipients());
+        //6.关闭连接
+        ts.close();
+    }
+}
+```
+
+### 18.3 `MailDemo02.java`
+
+`function-expansion\mail-send\src\main\java\com\phc\MailDemo02.java`
+
+```java
+package com.phc;
+
+import com.sun.mail.util.MailSSLSocketFactory;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.util.Properties;
+
+/**
+ * @FileName MailDemo02.java
+ * @Description 发送复杂邮件(带图片或文件)
+ * @Author phc
+ * @date 2023/1/6 20:05
+ * @Version 1.0
+ */
+public class MailDemo02 {
+    public static void main(String[] args) throws Exception {
+
+        Properties properties = new Properties();
+        //设置QQ邮件服务器
+        properties.setProperty("mail.host", "smtp.qq.com");
+        //邮件发送协议
+        properties.setProperty("mail.transport.protocol", "smtp");
+        //需要验证用户名密码
+        properties.setProperty("mail.smtp.auth", "true");
+
+        //关于QQ邮箱，还需要设置SSL加密，加上以下以下代码即可
+        MailSSLSocketFactory sf = new MailSSLSocketFactory();
+        sf.setTrustAllHosts(true);
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.socketFactory", sf);
+
+        //使用javaMail发送邮件的5个步骤
+        //1.创建定义整个应用程序所需的环境信息的Session对象
+        Session session = Session.getDefaultInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                //发件人邮件用户名、授权码
+                return new PasswordAuthentication("2550705615@qq.com", "授权码");
+            }
+        });
+        //--开启debug模式，这样就可以查看到程序发送email的运行状态
+        session.setDebug(true);
+        //2.通过session得到transport对象
+        Transport ts = session.getTransport();
+        //3.使用邮箱的用户名和授权码连上邮件服务器
+        ts.connect("smtp.qq.com", "2550705615@qq.com", "授权码");
+        //4.创建邮件
+        MimeMessage message = new MimeMessage(session);
+        //--邮件的发件人
+        message.setFrom(new InternetAddress("2550705615@qq.com"));
+        //--邮件的收件人
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress("2550705615@qq.com"));
+        //--邮件的标题
+        message.setSubject("hello");
+        //》》》》》》》》》》《《《《《《《《《
+        //图片
+        MimeBodyPart image = new MimeBodyPart();
+        //图片需要数据处理  DataHandler
+        DataHandler dh = new DataHandler(new FileDataSource("src/resources/bz.jpg"));
+        image.setDataHandler(dh);
+        //给图片设置一个id
+        image.setContentID("bz.jpg");
+
+        //文本
+        MimeBodyPart text = new MimeBodyPart();
+        text.setContent("这是一封邮件带图片<img src='cid:bz.jpg'/>的邮件","text/html;charset=UTF-8");
+        //整合
+        MimeMultipart mm = new MimeMultipart();
+        mm.addBodyPart(text);
+        mm.addBodyPart(image);
+        mm.setSubType("related");
+
+        //放到消息中，保存修改
+        message.setContent(mm);
+        message.saveChanges();;
+        //》》》》》》》》》》《《《《《《《《《
+        //5.发送邮件
+        ts.sendMessage(message, message.getAllRecipients());
+        //6.关闭连接
+        ts.close();
+    }
+}
+```
