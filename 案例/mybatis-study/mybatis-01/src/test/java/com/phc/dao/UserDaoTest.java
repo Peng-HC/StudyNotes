@@ -5,7 +5,9 @@ import com.phc.utils.MybatisUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @FileName UserDaoTest.java
@@ -44,12 +46,43 @@ public class UserDaoTest {
         sqlSession.close();
     }
 
+    //模糊查询
+    @Test
+    public void getUserLikeTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        List<User> users = userMapper.getUserLike("小");
+        for(User user:users) {
+            System.out.println(user);
+        }
+        sqlSession.close();
+    }
+
     //增删改查需要提交事务,不提交事务即使不报错也不能将修改后的值插入到数据库的表中
     @Test
     public void addUserTest() {
         SqlSession sqlSession = MybatisUtils.getSqlSession();
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         int affectRows = userMapper.addUser(new User(5,"小黄","1111"));
+        if(affectRows>0) {
+            System.out.println("插入成功!影响了"+affectRows+"行");
+        } else {
+            System.out.println("插入失败!");
+        }
+        //提交事务
+        sqlSession.commit();
+        sqlSession.close();
+    }
+
+    @Test
+    public void addUserByMapTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        Map<String, Object> newUser = new HashMap<String, Object>();
+        newUser.put("ID",5);
+        newUser.put("userName","小李");
+        newUser.put("userPassword","55555");
+        int affectRows = userMapper.addUserByMap(newUser);
         if(affectRows>0) {
             System.out.println("插入成功!影响了"+affectRows+"行");
         } else {

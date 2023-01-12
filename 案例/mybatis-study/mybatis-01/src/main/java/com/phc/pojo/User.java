@@ -1,5 +1,7 @@
 package com.phc.pojo;
 
+import org.apache.ibatis.type.Alias;
+
 /**
  * @FileName User.java
  * @Description 实体类,实现数据库mybatis的User表
@@ -7,6 +9,7 @@ package com.phc.pojo;
  * @date 2023/1/7 15:35
  * @Version 1.0
  */
+//@Alias("userAlias")
 public class User {
     private int id;
     private String name;

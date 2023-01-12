@@ -439,7 +439,7 @@ public class UserDaoTest {
 
 ## 三、CRUD
 
-增删改查
+### 3.1 增删改查
 
 ```xml
 <!--namespace:绑定一个Dao/Mapper接口,这里是绑定UserMapper接口-->
@@ -592,6 +592,952 @@ public class UserDaoTest {
    > }
    > ```
 
+
+### 3.2 map方法
+
+假设我们的实体类，或者数据库中的表，字段或者参数过多，我们应当考虑使用**Map**
+
+1. `mybatis-study\mybatis-01\src\main\java\com\phc\dao\UserMapper.java`
+
+   ```java
+   //使用map添加一个用户
+   int addUserByMap(Map map);
+   ```
+
+2. `mybatis-study\mybatis-01\src\main\java\com\phc\dao\UserMapper.xml`
+
+   ```xml
+   <!--使用map传递参数就只要根据key值即可,不需要严格按照数据库属性的值来设定-->
+   <insert id="addUserByMap" parameterType="Map" >
+       insert into mybatis.user(id,name,pwd) values (#{ID},#{userName},#{userPassword})
+   </insert>
+   ```
+
+3. `mybatis-study\mybatis-01\src\test\java\com\phc\dao\UserDaoTest.java`
+
+   ```java
+   @Test
+   public void addUserByMapTest() {
+       SqlSession sqlSession = MybatisUtils.getSqlSession();
+       UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+       Map<String, Object> newUser = new HashMap<String, Object>();
+       newUser.put("ID",5);
+       newUser.put("userName","小李");
+       newUser.put("userPassword","55555");
+       int affectRows = userMapper.addUserByMap(newUser);
+       if(affectRows>0) {
+           System.out.println("插入成功!影响了"+affectRows+"行");
+       } else {
+           System.out.println("插入失败!");
+       }
+       //提交事务
+       sqlSession.commit();
+       sqlSession.close();
+   }
+   ```
+
+- Map传递参数，直接在sql中取出key即可！
+- 对象传递参数，直接在sql中去对象的属性即可！
+- 只有一个基本类型参数的情况下，可以直接在sql中取到！
+- 多个参数用Map,或者注解
+
+### 3.3 模糊查询
+
+1. `mybatis-study\mybatis-01\src\main\java\com\phc\dao\UserMapper.java`
+
+   ```java
+   //模糊查询
+   List<User> getUserLike(String userName);
+   ```
+
+2. `mybatis-study\mybatis-01\src\main\java\com\phc\dao\UserMapper.xml`
+
+   ```xml
+   <!--模糊查询-->
+   <select id="getUserLike" parameterType="String" resultType="com.phc.pojo.User" >
+       select * from mybatis.user where name like "%"#{value}"%";
+   </select>
+   ```
+
+3. `mybatis-study\mybatis-01\src\test\java\com\phc\dao\UserDaoTest.java`
+
+   ```java
+   //模糊查询
+   @Test
+   public void getUserLikeTest() {
+       SqlSession sqlSession = MybatisUtils.getSqlSession();
+       UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+       List<User> users = userMapper.getUserLike("小");
+       for(User user:users) {
+           System.out.println(user);
+       }
+       sqlSession.close();
+   }
+   ```
+
+## 四、配置解析
+
+### 4.1 核心配置文件`mybatis-config.xml`
+
+MyBatis 的配置文件包含了会深深影响 MyBatis 行为的设置和属性信息。 配置文档的顶层结构如下：
+
+> configuration（配置）
+>
+> * properties（属性）
+> * settings（设置）
+> * typeAliases（类型别名）
+> * typeHandlers（类型处理器）
+> * objectFactory（对象工厂）
+> * plugins（插件）
+> * environments（环境配置）
+>   * environment（环境变量）
+>     * transactionManager（事务管理器）
+>       dataSource（数据源）
+>  * databaseIdProvider（数据库厂商标识）
+>  *  mappers（映射器）
+
+### 4.2 环境配置（environments）
+
+- MyBatis 可以配置成适应多种环境
+
+- **不过要记住：尽管可以配置多个环境，但每个 SqlSessionFactory 实例只能选择一种环境。**
+
+- 数据源的配置（比如：type=“POOLED”）
+
+- 学会配置多套运行环境-----更改id
+
+  ```xml
+  <environments default="id">
+  ```
+
+- Mybatis默认的事务管理器就是JDBC，连接池：POOLED
+
+### 4.3 属性（properties）
+
+我们可以通过properties属性来实现引用配置文件
+
+这些属性可以在外部进行配置，并可以进行动态替换。你既可以在典型的 Java 属性文件中配置这些属性，也可以在 properties 元素的子元素中设置【db.properties】
+
+编写一个配置文件db.properties：
+
+`mybatis-study\mybatis-01\src\main\resources\db.properties`
+
+```properties
+driver=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://localhost:3306/mybatis?useSSL=false&useUnicode=true&characterEncoding=UTF-8
+username=root
+password=123456
+```
+
+在核心配置文件中引入
+
+`mybatis-study\mybatis-01\src\main\resources\mybatis-config.xml`
+
+```xml
+<!--mybatis核心配置文件-->
+<configuration>
+    <!--引入外部配置文件(优先使用)-->
+    <properties resource="db.properties" />
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--每一个Mapper.xml都需要在MyBatis核心配置文件中注册-->
+    <mappers>
+        <mapper resource="com/phc/dao/UserMapper.xml"/>
+    </mappers>
+</configuration>
+```
+
+注意事项
+
+1. 可以直接引入外部文件
+
+2. 可以在其中增加一些属性配置
+
+3. 如果外部配置与property标签配置有同一个字段，则优先使用外部配置文件的
+
+   ```xml
+   <!--引入外部配置文件(优先使用)-->
+   <properties resource="db.properties">
+       <!--优先级较低,若外部配置与property标签配置有同一个字段,则优先使用外部配置文件的-->
+       <property name="password" value="111111"/>
+   </properties>
+   ```
+
+### 4.4 typeAliases（类型别名）
+
+类型别名可为 Java 类型设置一个缩写名字。它仅用于 XML 配置，意在降低冗余的全限定类名书写。
+
+1. 方法一：通过`typeAlias`设置一一对应的`type`和`alias`
+
+   （1）`mybatis-study\mybatis-01\src\main\resources\mybatis-config.xml`
+
+   ```xml
+   <!--设置别名-->
+   <typeAliases>
+       <typeAlias type="com.phc.pojo.User" alias="User" />
+   </typeAliases>
+   ```
+
+   （2）`mybatis-study\mybatis-01\src\main\java\com\phc\dao\UserMapper.xml`
+
+   ```xml
+   <!--select查询语句,id对应namespace中接口里的方法名,resultType对应返回值的类型-->
+   <!--<select id="getUserList" resultType="com.phc.pojo.User" >-->
+   <select id="getUserList" resultType="User" >
+       select * from mybatis.user;
+   </select>
+   ```
+
+2. 方法二：通过`package`标签可以指定一个包名，MyBatis会在包名下搜索需要的Java Bean，比如：扫描实体类的包，它的默认别名就为这个类的类名，首字母小写。
+
+   （1）`mybatis-study\mybatis-01\src\main\resources\mybatis-config.xml`
+
+   ```xml
+   <!--设置别名-->
+   <typeAliases>
+       <!--<typeAlias type="com.phc.pojo.User" alias="User" />-->
+       <package name="com.phc.pojo"/>
+   </typeAliases>
+   ```
+
+   （2）`mybatis-study\mybatis-01\src\main\java\com\phc\dao\UserMapper.xml`
+
+   ```xml
+   <!--select查询语句,id对应namespace中接口里的方法名,resultType对应返回值的类型-->
+   <!--<select id="getUserList" resultType="com.phc.pojo.User" >-->
+   <!--<select id="getUserList" resultType="User" >-->
+   <select id="getUserList" resultType="user" >
+       select * from mybatis.user;
+   </select>
+   ```
+
+   在实体类比较少的时候，使用第一种方式；如果实体类十分多，建议使用第二种
+
+3. 方法三：在实体类中使用注解起别名
+
+   `mybatis-study\mybatis-01\src\main\java\com\phc\pojo\User.java`
+
+   ```java
+   @Alias("userAlias")
+   public class User {
+       ......
+   }
+   ```
+
+
+
+### 4.5 设置(settings)
+
+这是 MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为。
+
+![](pictures/4-配置解析/设置1.png)
+
+![](pictures/4-配置解析/设置.png)
+
+一个配置完整的 settings 元素的示例如下：
+
+```xml
+<settings>
+  <setting name="cacheEnabled" value="true"/>
+  <setting name="lazyLoadingEnabled" value="true"/>
+  <setting name="multipleResultSetsEnabled" value="true"/>
+  <setting name="useColumnLabel" value="true"/>
+  <setting name="useGeneratedKeys" value="false"/>
+  <setting name="autoMappingBehavior" value="PARTIAL"/>
+  <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+  <setting name="defaultExecutorType" value="SIMPLE"/>
+  <setting name="defaultStatementTimeout" value="25"/>
+  <setting name="defaultFetchSize" value="100"/>
+  <setting name="safeRowBoundsEnabled" value="false"/>
+  <setting name="mapUnderscoreToCamelCase" value="false"/>
+  <setting name="localCacheScope" value="SESSION"/>
+  <setting name="jdbcTypeForNull" value="OTHER"/>
+  <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+</settings>
+```
+
+其他配置（了解就行）
+
+- typeHandlers（类型处理器）
+- objectFactory（对象工厂）
+- plugins（插件）
+
+### 4.6 映射器（mappers）
+
+MapperRegistry：注册绑定我们的Mapper文件，每写一个dao层就要写一个Mapper文件 
+
+1. 方式一：建议使用
+
+   ```xml
+   <!--每一个Mapper.xml都需要在MyBatis核心配置文件中注册-->
+   <mappers>
+       <mapper resource="com/phc/dao/UserMapper.xml"/>
+   </mappers>
+   ```
+
+2. 方式二
+
+   ```xml
+   <!-- 使用映射器接口实现类的完全限定类名 -->
+   <mappers>
+       <mapper class="org.mybatis.builder.AuthorMapper"/>
+       <mapper class="org.mybatis.builder.BlogMapper"/>
+       <mapper class="org.mybatis.builder.PostMapper"/>
+   </mappers>
    
+   ```
+
+   注意：
+
+   - 接口和他的Mapper配置文件必须同名
+   - 接口和他的Mapper配置文件必须在同一个包下
+
+3. 方式三
+
+   ```xml
+   <!-- 将包内的映射器接口实现全部注册为映射器 -->
+   <mappers>
+     <package name="org.mybatis.builder"/>
+   </mappers>
+   ```
+
+   注意：
+
+   - 接口和他的Mapper配置文件必须同名
+   - 接口和他的Mapper配置文件必须在同一个包下
+
+### 4.7 生命周期和作用域
+
+![](pictures/4-配置解析/生命周期和作用域.png)
+
+不同作用域和生命周期类别是至关重要的，因为错误的使用会导致非常严重的**并发问题**。
+
+1. SqlSessionFactoryBuilder：
+
+   - 一旦创建了 SqlSessionFactory，就不再需要SqlSessionFactoryBuilder了
+   - 局部变量
+
+2. **SqlSessionFactory**
+
+   - 可以理解为数据库连接池
+   - SqlSessionFactory 一旦被创建就应该在应用的运行期间一直存在，没有任何理由丢弃它或重新创建另一个实例
+   - SqlSessionFactory 的最佳作用域是应用作用域，最简单的就是使用单例模式或者静态单例模式
+
+3. **SqlSession**
+
+   - 连接到连接池的一个请求
+   - SqlSession 的实例不是线程安全的，因此是不能被共享的，所以它的最佳的作用域是请求或方法作用域
+   - 用完之后需要赶紧关闭，否则资源被占用
+
+   ![](pictures/4-配置解析/SqlSession.png)
+
+   这里每一个Mapper就代表一个具体的业务
+
+## 五、解决属性名和字段名不一致的问题
+
+### 5.1 问题
+
+1. 数据库中的字段
+
+   ![](pictures/5-解决属性名和字段名不一致的问题/数据库字段名.png)
+
+2. 新建一个项目，拷贝之前的，测试实体类字段不一样的情况
+
+   ```java
+   public class User {
+       private int id;
+       private String name;
+       private String password; //属性名和字段名存在不一致的问题
+   }
+   ```
 
    
+
+3. 测试出现`password=null`的错误
+
+   ![](pictures/5-解决属性名和字段名不一致的问题/测试出现password=null的错误.png)
+
+4. 问题原因
+
+   ```sql
+   # 此时已经没有pwd
+   select id,name,pwd from mybatis.user
+   ```
+
+### 5.2 解决方法
+
+1. 解决方法：起别名
+
+   ```sql
+   select id,name,pwd as password from mybatis.user 
+   ```
+
+2. ### resultMap方法
+
+   `mybatis-study\mybatis-02\src\main\java\com\phc\dao\UserMapper.xml`
+
+   ```xml
+   <!--resultMap结果集映射-->
+   <resultMap id="UserMap" type="User">
+       <!--column数据库中的字段，properties实体类中的属性-->
+       <result column="pwd" property="password" />
+   </resultMap>
+   
+   <!--select查询语句,id对应namespace中接口里的方法名,resultType对应返回值的类型-->
+   <select id="getUserList" resultMap="UserMap" >
+       select * from mybatis.user;
+   </select>
+   ```
+
+   `resultMap` 元素是 MyBatis 中最重要最强大的元素
+
+   `ResultMap` 的设计思想是，对简单的语句做到零配置，对于复杂一点的语句，只需要描述语句之间的关系就行了
+
+### 5.3 回顾使用mybatis的步骤
+
+新建一个普通的maven模块：mybatis-03
+
+> 1. 在src/main/resources路径下建立mybatis-config.xml文件建立核心配置文件
+> 2. 在src/main/java/com/phc/utils路径下编写工具类MybatisUtils.java读取配置文件获取sqlsessionfactory
+> 3. 在src/main/java/com/phc/pojo路径下编写实体类User.java
+> 4. 在src/main/java/com/phc/dao路径下编写接口UserMapper.java和UserMapper.xml
+> 5. 编写测试类
+
+## 六、日志
+
+### 6.1 日志工厂
+
+如果一个数据库操作出现了异常，我们需要排错，日志就是最好的助手
+
+之前: sout,debug
+
+现在：日志工厂
+
+![](pictures/6-日志工厂/日志工厂.png)
+
+日志工厂模式：
+
+- SLF4J |
+- **LOG4J（3.5.9 起废弃）**
+- LOG4J2
+- JDK_LOGGING
+- COMMONS_LOGGING
+- **STDOUT_LOGGING（标准日志输出）**
+- NO_LOGGING
+
+1. 在mybatis核心配置文件中，配置我们的日志
+
+   `mybatis-study\mybatis-03\src\main\resources\mybatis-config.xml`
+
+   ```xml
+   <settings>
+       <setting name="logImpl" value="STDOUT_LOGGING"/>
+   </settings>
+   ```
+
+2. 日志输出结果
+
+   ```bash
+   Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+   PooledDataSource forcefully closed/removed all connections.
+   PooledDataSource forcefully closed/removed all connections.
+   PooledDataSource forcefully closed/removed all connections.
+   PooledDataSource forcefully closed/removed all connections.
+   Opening JDBC Connection
+   Created connection 1250142026.
+   Setting autocommit to false on JDBC Connection [com.mysql.cj.jdbc.ConnectionImpl@4a83a74a]
+   ==>  Preparing: select * from mybatis.user;
+   ==> Parameters: 
+   <==    Columns: id, name, pwd
+   <==        Row: 1, 小兰, 123
+   <==        Row: 2, 柯南, 12345
+   <==        Row: 3, phc, 666
+   <==        Row: 4, 小红, 0000
+   <==        Row: 5, 小李, 55555
+   <==        Row: 6, 小王, 666666
+   <==      Total: 6
+   User{id=1, name='小兰', pwd='123'}
+   User{id=2, name='柯南', pwd='12345'}
+   User{id=3, name='phc', pwd='666'}
+   User{id=4, name='小红', pwd='0000'}
+   User{id=5, name='小李', pwd='55555'}
+   User{id=6, name='小王', pwd='666666'}
+   Resetting autocommit to true on JDBC Connection [com.mysql.cj.jdbc.ConnectionImpl@4a83a74a]
+   Closing JDBC Connection [com.mysql.cj.jdbc.ConnectionImpl@4a83a74a]
+   Returned connection 1250142026 to pool.
+   ```
+
+### 6.2 日志工厂模式之`LOG4J`
+
+什么是log4j：
+
+> （1）Log4j是Apache的一个开源项目，通过使用Log4j，我们可以控制日志信息输送的目的地是控制台、文件、GUI组件
+>
+> （2）我们也可以控制每一条日志的输出格式
+>
+> （3）通过定义每一条日志信息的级别，我们能够更加细致地控制日志的生成过程
+>
+> （4）通过一个配置文件来灵活地进行配置，而不需要修改应用的代码
+
+1. 先导入log4j的包
+
+   `mybatis-study\pom.xml`
+
+   ```xml
+   <!--日志工厂模式(log4j)-->
+   <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+   <dependency>
+       <groupId>log4j</groupId>
+       <artifactId>log4j</artifactId>
+       <version>1.2.17</version>
+   </dependency>
+   ```
+
+2. log4j配置文件
+
+   `mybatis-study\mybatis-03\src\main\resources\log4j.properties`
+
+   ```properties
+   ### 配置根 ###
+   log4j.rootLogger = debug,console,file
+   
+   
+   ### 配置输出到控制台 ###
+   log4j.appender.console = org.apache.log4j.ConsoleAppender
+   log4j.appender.console.Target = System.out
+   log4j.appender.console.Threshold = debug 
+   log4j.appender.console.layout = org.apache.log4j.PatternLayout
+   log4j.appender.console.layout.ConversionPattern =  %d{ABSOLUTE} %5p %c{1}:%L - %m%n
+   
+   ### 配置输出到文件 ###
+   log4j.appender.file = org.apache.log4j.FileAppender
+   log4j.appender.file.File = ./log/phc.log
+   
+   log4j.appender.file.Append = true
+   log4j.appender.file.Threshold = debug
+   
+   log4j.appender.file.layout = org.apache.log4j.PatternLayout
+   log4j.appender.file.layout.ConversionPattern = %-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n
+   
+   ### 配置输出到文件，并且每天都创建一个文件 ###
+   log4j.appender.dailyRollingFile = org.apache.log4j.DailyRollingFileAppender
+   log4j.appender.dailyRollingFile.File = logs/log.log
+   log4j.appender.dailyRollingFile.Append = true
+   log4j.appender.dailyRollingFile.Threshold = debug
+   log4j.appender.dailyRollingFile.layout = org.apache.log4j.PatternLayout
+   log4j.appender.dailyRollingFile.layout.ConversionPattern = %-d{yyyy-MM-dd HH:mm:ss}  [ %t:%r ] - [ %p ]  %m%n
+   
+   ### 设置输出sql的级别，其中logger后面的内容全部为jar包中所包含的包名 ###
+   log4j.logger.org.mybatis=debug
+   log4j.logger.java.sql=debug
+   log4j.logger.java.sql.Connection=debug
+   log4j.logger.java.sql.Statement=debug
+   log4j.logger.java.sql.PreparedStatement=debug
+   log4j.logger.java.sql.ResultSet=debug
+   ```
+
+3. 在mybatis核心配置文件中设置log4j为日志的实现
+
+   `mybatis-study\mybatis-03\src\main\resources\mybatis-config.xml`
+
+   ```xml
+   <settings>
+       <!--<setting name="logImpl" value="STDOUT_LOGGING"/>-->
+       <setting name="logImpl" value="LOG4J"/>
+   </settings>
+   ```
+
+4. Log4j的使用，直接运行刚才的测试
+
+   ![](pictures/6-日志工厂/Log4j的使用.png)
+
+5. 简单使用
+
+   （1）在要使用Log4j的类中，导入包import org.apache.log4j.Logger;
+
+   （2）日志对象，参数为当前类的class
+
+   `mybatis-study\mybatis-03\src\test\java\com\phc\dao\UserDaoTest.java`
+
+   ```java
+   import org.apache.log4j.Logger;
+   //log4j的使用
+   static Logger logger = Logger.getLogger(UserDaoTest.class);
+   @Test
+   public void log4jTest() {
+       logger.info("info:进入了log4jTest");
+       logger.debug("debug:进入了log4jTest");
+       logger.error("error:进入了log4jTest");
+   }
+   ```
+
+   （3）输出
+
+   ![](pictures/6-日志工厂/生成log日志文件.png)
+
+## 七、分页的实现
+
+为什么要分页：减少数据的一次性处理量
+
+### 7.1 使用Limit分页
+
+```sql
+SELECT * FROM user limit startIndex,pageSize;
+SELECT * FROM user limit 0,2;
+SELECT * FROM user limit 3;#[0,n]
+```
+
+使用`Mybatis`实现分页，核心就是`sql`
+
+1. `mybatis-study\mybatis-03\src\main\java\com\phc\dao\UserMapper.java`
+
+   ```java
+   //使用limit进行分页
+   List<User> getUserByLimit(Map<String,Integer> map);
+   ```
+
+2. `mybatis-study\mybatis-03\src\main\java\com\phc\dao\UserMapper.xml`
+
+   ```xml
+   <!--使用limit进行分页-->
+   <select id="getUserByLimit" parameterType="map" resultType="User">
+       select * from mybatis.user limit #{startIndex},#{pageSize}
+   </select>
+   ```
+
+3. `mybatis-study\mybatis-03\src\test\java\com\phc\dao\UserDaoTest.java`
+
+   ```java
+   //使用limit进行分页
+   @Test
+   public void getUserByLimitTest() {
+       SqlSession sqlSession = MybatisUtils.getSqlSession();
+       UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+       HashMap<String,Integer> map = new HashMap<>();
+       map.put("startIndex",0);
+       map.put("pageSize",3);
+       List<User> userList = userMapper.getUserByLimit(map);
+       for(User user:userList) {
+           System.out.println(user);
+       }
+       sqlSession.close();
+   }
+   ```
+
+### 7.2 RowBounds分页
+
+RowBounds分页了解，不建议使用
+
+不再使用sql实现分页
+
+1. `mybatis-study\mybatis-03\src\main\java\com\phc\dao\UserMapper.java`
+
+   ```java
+   //RowBounds分页
+   List<User> getUserByRowBounds();
+   ```
+
+2. `mybatis-study\mybatis-03\src\main\java\com\phc\dao\UserMapper.xml`
+
+   ```xml
+   <!--RowBounds分页-->
+   <select id="getUserByRowBounds"  resultMap="UserMap">
+       select * from mybatis.user
+   </select>
+   ```
+
+3. `mybatis-study\mybatis-03\src\test\java\com\phc\dao\UserDaoTest.java`
+
+   ```java
+   @Test
+   public void getUserByRowBounds(){
+       SqlSession sqlSession = MybatisUtils.getSqlSession();
+       //RowBounds实现
+       RowBounds rowBounds = new RowBounds(1, 2);
+       //通过java代码层面实现分页
+       List<User> userList = sqlSession.selectList("com.phc.dao.UserMapper.getUserByRowBounds",null,rowBounds);
+       for (User user : userList) {
+           System.out.println(user);
+       }
+       sqlSession.close();
+   }
+   ```
+
+### 7.3 分页插件
+
+MyBatis 分页插件 PageHelper
+
+如何使用---->https://pagehelper.github.io/docs/howtouse/
+
+## 八、使用注解开发
+
+### 8.1 面向接口编程
+
+1. 什么叫面向接口编程：在一个面向对象的系统中，系统的各种功能是由许许多多的不同对象协作完成的。在这种情况下，各个对象内部是如何实现自己的，对系统设计人员来讲就不那么重要了；而各个对象之间的协作关系则成为系统设计的关键。小到不同类之间的通信，大到各模块之间的交互，在系统设计之初都是要着重考虑的，这也是系统设计的主要工作内容。面向接口编程就是指按照这种思想来编程。
+
+2. 面向接口编程的优点：
+
+   （1）降低程序的耦合性。其能够最大限度的解耦，所谓解耦既是解耦合的意思，它和耦合相对。耦合就是联系，耦合越强，联系越紧密。在程序中紧密的联系并不是一件好的事情，因为两种事物之间联系越紧密，你更换其中之一的难度就越大，扩展功能和debug的难度也就越大。
+
+   （2）易于程序的扩展；
+
+   （3）有利于程序的维护。
+
+### 8.2 注解应用实例
+
+1. `mybatis-study\mybatis-04\src\main\java\com\phc\dao\UserMapper.java`
+
+   ```java
+   package com.phc.dao;
+   
+   import com.phc.pojo.User;
+   import org.apache.ibatis.annotations.Select;
+   
+   import java.util.List;
+   import java.util.Map;
+   
+   /**
+    * @FileName UserDao.java
+    * @Description UserDao接口
+    * @Author phc
+    * @date 2023/1/7 15:40
+    * @Version 1.0
+    */
+   public interface UserMapper {
+       //使用注解开发
+       @Select("select * from mybatis.user")
+       List<User> getUsers();
+   }
+   ```
+
+2. 删除实现接口的`UserMapper.xml`
+
+3. `mybatis-study\mybatis-04\src\main\resources\mybatis-config.xml`
+
+   ```xml
+   <!--绑定接口-->
+   <mappers>
+       <mapper class="com.phc.dao.UserMapper" />
+   </mappers>
+   ```
+
+4. `mybatis-study\mybatis-04\src\test\java\com\phc\dao\UserMapperTest.java`
+
+   ```java
+   package com.phc.dao;
+   
+   import com.phc.pojo.User;
+   import com.phc.utils.MybatisUtils;
+   import org.apache.ibatis.session.SqlSession;
+   import org.junit.Test;
+   
+   import java.util.List;
+   
+   /**
+    * @FileName UserMapperTest.java
+    * @Description 使用注解开发
+    * @Author phc
+    * @date 2023/1/12 17:30
+    * @Version 1.0
+    */
+   public class UserMapperTest {
+       @Test
+       public void getUsersTest() {
+           SqlSession sqlSession = MybatisUtils.getSqlSession();
+           UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+           List<User> users = userMapper.getUsers();
+           for(User user:users) {
+               System.out.println(user);
+           }
+           sqlSession.close();
+       }
+   }
+   ```
+
+本质：反射机制实现
+
+底层：动态代理
+
+![](pictures/8-使用注解开发/动态代理.png)
+
+### 8.3 Mybatis详细执行流程
+
+具体实现
+
+![](pictures/8-使用注解开发/Mybatis详细执行流程.png)
+
+概要步骤：
+
+1. 在src/main/resources路径下建立mybatis-config.xml文件建立核心配置文件
+2. 在src/main/java/com/phc/utils路径下编写工具类MybatisUtils.java读取配置文件获取sqlsessionfactory
+3. 在src/main/java/com/phc/pojo路径下编写实体类User.java
+4. 在src/main/java/com/phc/dao路径下编写接口UserMapper.java和UserMapper.xml
+5. 编写测试类
+
+### 8.4 注解实现CRUD
+
+1. 我们可以在工具类创建的时候实现自动提交事务
+
+   `mybatis-study\mybatis-04\src\main\java\com\phc\utils\MybatisUtils.java`
+
+   ```java
+   public static SqlSession getSqlSession() {
+       //return sqlSessionFactory.openSession();
+       //自动提交事务
+       return sqlSessionFactory.openSession(true);
+   }
+   ```
+
+2. `mybatis-study\mybatis-04\src\main\java\com\phc\dao\UserMapper.java`
+
+   ```java
+   package com.phc.dao;
+   
+   import com.phc.pojo.User;
+   import org.apache.ibatis.annotations.*;
+   
+   import java.util.List;
+   
+   /**
+    * @FileName UserMapper.java
+    * @Description 使用注解+接口实现CRUD
+    * @Author phc
+    * @date 2023/1/12 21:03
+    * @Version 1.0
+    */
+   public interface UserMapper {
+       //增
+       @Insert("insert into mybatis.user(id,name,pwd) values (#{id},#{name},#{pwd})")
+       int addUser(User user);
+   
+       //删
+       @Delete("delete from mybatis.user where id=#{uid}")
+       int deleteUser(@Param("uid") int id);
+   
+       //改
+       @Update("update user set name=#{name},pwd=#{pwd} where id=#{id}")
+       int updateUser(User user);
+   
+       //查
+       @Select("select * from mybatis.user")
+       List<User> getUsers();
+   }
+   ```
+
+3. 绑定接口
+
+   `mybatis-study\mybatis-04\src\main\resources\mybatis-config.xml`
+
+   ```xml
+   <!--绑定接口-->
+   <mappers>
+       <mapper class="com.phc.dao.UserMapper" />
+   </mappers>
+   ```
+
+4. `mybatis-study\mybatis-04\src\test\java\com\phc\dao\UserMapperTest.java`
+
+   ```java
+   package com.phc.dao;
+   
+   import com.phc.pojo.User;
+   import com.phc.utils.MybatisUtils;
+   import org.apache.ibatis.session.SqlSession;
+   import org.junit.Test;
+   
+   import java.util.List;
+   
+   /**
+    * @FileName UserMapperTest.java
+    * @Description 使用注解开发
+    * @Author phc
+    * @date 2023/1/12 17:30
+    * @Version 1.0
+    */
+   public class UserMapperTest {
+       //增
+       @Test
+       public void addUserTest() {
+           SqlSession sqlSession = MybatisUtils.getSqlSession();
+           UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+           int affectRows = userMapper.addUser(new User(7, "小黑子", "7777777"));
+           if(affectRows>0) {
+               System.out.println("添加用户成功!");
+           } else {
+               System.out.println("添加用户失败!");
+           }
+           sqlSession.close();
+       }
+       //删
+       @Test
+       public void deleteUserTest() {
+           SqlSession sqlSession = MybatisUtils.getSqlSession();
+           UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+           int affectRows = userMapper.deleteUser(7);
+           if(affectRows>0) {
+               System.out.println("删除用户成功!");
+           } else {
+               System.out.println("删除用户失败!");
+           }
+           sqlSession.close();
+       }
+       //改
+       @Test
+       public void updateUserTest() {
+           SqlSession sqlSession = MybatisUtils.getSqlSession();
+           UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+           int affectRows = userMapper.updateUser(new User(7, "小霍", "134134"));
+           if(affectRows>0) {
+               System.out.println("修改用户成功!");
+           } else {
+               System.out.println("修改用户失败!");
+           }
+           sqlSession.close();
+       }
+       //查
+       @Test
+       public void getUsersTest() {
+           SqlSession sqlSession = MybatisUtils.getSqlSession();
+           UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+           List<User> users = userMapper.getUsers();
+           for(User user:users) {
+               System.out.println(user);
+           }
+           sqlSession.close();
+       }
+   }
+   ```
+
+5. **关于 @Param("") 注解**
+
+   - 基本类型的参数或者String需要加上
+   - 引用类型不需要加
+   - 如果只有一个基本类型的话，可以忽略，但是建议大家都加上
+   - 我们在sql中引用的就是我们这里的@Param(“”)中设定的属性名
+
+6. #{ } 和 ${ }
+
+   （1）#{}是预编译处理，$ {}是字符串替换
+
+   （2）mybatis在处理两个字符时，处理的方式也是不同的：
+
+   * 处理#{}时，会将sql中的#{}整体替换为占位符（即：?），调用PreparedStatement的set方法来赋值；
+   * 在处理 $ { } 时，就是把 ${ } 替换成变量的值。
+
+   （3）假如用${}来编写SQL会出现：恶意SQL注入，对于数据库的数据安全性就没办法保证了
+
+   （4）使用 #{} 可以有效的防止SQL注入，提高系统安全性：
+
+   预编译的机制。预编译是提前对SQL语句进行预编译，而后再调用SQL，注入的参数就不会再进行SQL编译。而SQL注入是发生在编译的过程中，因为恶意注入了某些特殊字符，最后被编译时SQL时轻而易举的通过，从而导致数据泄露。而预编译机制则可以很好的防止SQL注入。
+
+
+

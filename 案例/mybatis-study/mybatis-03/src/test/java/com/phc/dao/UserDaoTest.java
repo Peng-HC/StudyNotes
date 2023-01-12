@@ -1,0 +1,149 @@
+package com.phc.dao;
+
+import com.phc.pojo.User;
+import com.phc.utils.MybatisUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @FileName UserDaoTest.java
+ * @Description 日志工厂
+ * @Author phc
+ * @date 2023/1/12 12:10
+ * @Version 1.0
+ */
+public class UserDaoTest {
+    //log4j的使用
+    static Logger logger = Logger.getLogger(UserDaoTest.class);
+    @Test
+    public void log4jTest() {
+        logger.info("info:进入了log4jTest");
+        logger.debug("debug:进入了log4jTest");
+        logger.error("error:进入了log4jTest");
+    }
+
+    //使用limit进行分页
+    @Test
+    public void getUserByLimitTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        HashMap<String,Integer> map = new HashMap<>();
+        map.put("startIndex",0);
+        map.put("pageSize",3);
+        List<User> userList = userMapper.getUserByLimit(map);
+        for(User user:userList) {
+            System.out.println(user);
+        }
+        sqlSession.close();
+    }
+
+    @Test
+    public void getUserListTest() {
+        //1.获取SqlSessionFactory对象
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        //方式一:getMapper(推荐)
+        //2.执行sql
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        List<User> userList = userMapper.getUserList();
+//        //方式二:selectList(不推荐)
+//        List<User> userList = sqlSession.selectList("com.phc.dao.UserDao.getUserList");
+        for(User user:userList) {
+            System.out.println(user);
+        }
+        //3.关闭SqlSession
+        sqlSession.close();
+    }
+
+    @Test
+    public void getUserByIdTest() {
+        //获取SqlSessionFactory对象
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        //拿到UserMapper类
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        //执行UserMapper类中的方法
+        User user = userMapper.getUserById(2);
+        System.out.println(user);
+        sqlSession.close();
+    }
+
+    //模糊查询
+    @Test
+    public void getUserLikeTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        List<User> users = userMapper.getUserLike("小");
+        for(User user:users) {
+            System.out.println(user);
+        }
+        sqlSession.close();
+    }
+
+    //增删改查需要提交事务,不提交事务即使不报错也不能将修改后的值插入到数据库的表中
+    @Test
+    public void addUserTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        int affectRows = userMapper.addUser(new User(5,"小黄","1111"));
+        if(affectRows>0) {
+            System.out.println("插入成功!影响了"+affectRows+"行");
+        } else {
+            System.out.println("插入失败!");
+        }
+        //提交事务
+        sqlSession.commit();
+        sqlSession.close();
+    }
+
+    @Test
+    public void addUserByMapTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        Map<String, Object> newUser = new HashMap<String, Object>();
+        newUser.put("ID",5);
+        newUser.put("userName","小李");
+        newUser.put("userPassword","55555");
+        int affectRows = userMapper.addUserByMap(newUser);
+        if(affectRows>0) {
+            System.out.println("插入成功!影响了"+affectRows+"行");
+        } else {
+            System.out.println("插入失败!");
+        }
+        //提交事务
+        sqlSession.commit();
+        sqlSession.close();
+    }
+
+    @Test
+    public void updateUserTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        int affectRows = userMapper.updateUser(new User(3, "phc", "666"));
+        if(affectRows>0) {
+            System.out.println("修改成功!影响了"+affectRows+"行");
+        } else {
+            System.out.println("修改失败!");
+        }
+        sqlSession.commit();
+        sqlSession.close();
+    }
+
+    @Test
+    public void deleteUserTest() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        int deleteUserById = 5;
+        int affectRows = userMapper.deleteUser(deleteUserById);
+        if(affectRows>0) {
+            System.out.println("删除成功!影响了"+affectRows+"行,删除的用户ID为"+deleteUserById);
+        } else {
+            System.out.println("删除ID为"+deleteUserById+"的用户失败!");
+        }
+        sqlSession.commit();
+        sqlSession.close();
+    }
+}

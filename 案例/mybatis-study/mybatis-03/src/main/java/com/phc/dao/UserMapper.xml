@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace:绑定一个Dao/Mapper接口,这里是绑定UserMapper接口-->
+<mapper namespace="com.phc.dao.UserMapper">
+    <!--使用limit进行分页-->
+    <select id="getUserByLimit" parameterType="map" resultType="User">
+        select * from mybatis.user limit #{startIndex},#{pageSize}
+    </select>
+
+    <!--select查询语句,id对应namespace中接口里的方法名,resultType对应返回值的类型-->
+    <select id="getUserList" resultType="User" >
+        select * from mybatis.user;
+    </select>
+
+    <!--parameterType:方法参数类型-->
+    <select id="getUserById" parameterType="int" resultType="com.phc.pojo.User" >
+        select * from mybatis.user where id=#{id};
+    </select>
+
+    <!--模糊查询-->
+    <select id="getUserLike" parameterType="String" resultType="com.phc.pojo.User" >
+        select * from mybatis.user where name like "%"#{value}"%";
+    </select>
+
+    <!--增:sql为insert时标签也需要为insert-->
+    <insert id="addUser" parameterType="com.phc.pojo.User">
+        <!--对象中的属性可以直接取出来-->
+        insert into mybatis.user(id,name,pwd) values (#{id},#{name},#{pwd});
+    </insert>
+
+    <!--使用map传递参数就只要根据key值即可,不需要严格按照数据库属性的值来设定-->
+    <insert id="addUserByMap" parameterType="Map" >
+        insert into mybatis.user(id,name,pwd) values (#{ID},#{userName},#{userPassword})
+    </insert>
+
+    <!--改-->
+    <update id="updateUser" parameterType="com.phc.pojo.User" >
+        update mybatis.user set name=#{name},pwd=#{pwd} where id=#{id};
+    </update>
+
+    <!--删-->
+    <delete id="deleteUser" parameterType="int" >
+        delete from mybatis.user where id=#{id};
+    </delete>
+
+</mapper>
