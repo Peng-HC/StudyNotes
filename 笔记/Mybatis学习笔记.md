@@ -1539,5 +1539,103 @@ MyBatis 分页插件 PageHelper
 
    预编译的机制。预编译是提前对SQL语句进行预编译，而后再调用SQL，注入的参数就不会再进行SQL编译。而SQL注入是发生在编译的过程中，因为恶意注入了某些特殊字符，最后被编译时SQL时轻而易举的通过，从而导致数据泄露。而预编译机制则可以很好的防止SQL注入。
 
+## 九、Lombok插件
+
+Lombok项目是一个java库，他是一个插件，它会自动插入编辑器和构建工具中，Lombok提供了一组有用的注释，用来消除Java类中的大量样板代码。仅五个字符（@Data）就可以替换数百行代码从而产生干净，简洁且易于维护的Java类。
+
+使用步骤：
+
+1. 在IDEA中安装Lombok插件
+
+   ![](pictures/9-Lombok/Lombok插件安装1.png)
+
+   ![Lombok插件安装2](pictures/9-Lombok/Lombok插件安装2.png)
+
+2. 在项目中导入Lombok的jar包
+
+   `mybatis-study\pom.xml`
+
+   ```xml
+   <!--Lombok插件-->
+   <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+   <dependency>
+       <groupId>org.projectlombok</groupId>
+       <artifactId>lombok</artifactId>
+       <version>1.18.12</version>
+   </dependency>
+   ```
+
+   
+
+3. 直接在实体类中添加Lombok插件支持的注解即可
+
+   `mybatis-study\mybatis-04\src\main\java\com\phc\pojo\UserByLombok.java`
+
+   ```java
+   package com.phc.pojo;
+   
+   import lombok.AllArgsConstructor;
+   import lombok.Data;
+   import lombok.NoArgsConstructor;
+   
+   /**
+    * @FileName UserByLombok.java
+    * @Description Lombok插件测试
+    * @Author phc
+    * @date 2023/1/13 9:50
+    * @Version 1.0
+    */
+   @Data
+   @AllArgsConstructor
+   @NoArgsConstructor
+   public class UserByLombok {
+       private int id;
+       private String name;
+       private String pwd;
+   }
+   ```
+
+4. 测试结果
+
+   ![](pictures/9-Lombok/测试.png)
+
+5. Lombok支持的注解
+
+   ```java
+   @Getter and @Setter
+   @FieldNameConstants
+   @ToString
+   @EqualsAndHashCode
+   @AllArgsConstructor, @RequiredArgsConstructor and @NoArgsConstructor
+   @Log, @Log4j, @Log4j2, @Slf4j, @XSlf4j, @CommonsLog, @JBossLog, @Flogger, @CustomLog
+   @Data
+   @Builder
+   @SuperBuilder
+   @Singular
+   @Delegate
+   @Value
+   @Accessors
+   @Wither
+   @With
+   @SneakyThrows
+   @val
+   @var
+   experimental @var
+   @UtilityClass
+   Lombok config system
+   ```
+
+6. 重要的注解
+
+   ```java
+   @Data:无参构造，get,set,toString,hashcode,equals
+   @AllArgsConstructor
+   @NoArgsConstructor
+   @Getter and @Setter
+   @ToString
+   ```
+
+
+
 
 
