@@ -1635,7 +1635,330 @@ Lombok项目是一个java库，他是一个插件，它会自动插入编辑器�
    @ToString
    ```
 
+## 十、多对一处理 
 
+1. 多对一：
 
+> 多个学生对应一个老师
+> 对于学生而言，关联···多个学生关联一个老师【多对一】
+> 对于老师而言，集合···一个老师有很多学生【一对多】
 
+2. 结果映射（resultMap）
 
+* association
+
+– 一个复杂类型的关联；许多结果将包装成这种类型
+
+嵌套结果映射 – 关联可以是 resultMap 元素，或是对其它结果映射的引用
+
+* collection
+
+– 一个复杂类型的集合
+
+嵌套结果映射 – 集合可以是 resultMap 元素，或是对其它结果映射的引用
+
+### 10.1 测试环境搭建
+
+#### 10.1.1 新建学生表和教师表
+
+```sql
+CREATE TABLE IF NOT EXISTS `teacher` (
+  `id` INT(10) NOT NULL,
+  `name` VARCHAR(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8
+
+INSERT INTO teacher(`id`, `name`) VALUES (1, '秦老师'); 
+
+CREATE TABLE IF NOT EXISTS `student` (
+  `id` INT(10) NOT NULL,
+  `name` VARCHAR(30) DEFAULT NULL,
+  `tid` INT(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fktid` (`tid`),
+  CONSTRAINT `fktid` FOREIGN KEY (`tid`) REFERENCES `teacher` (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('1', '小明', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('2', '小红', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('3', '小张', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('4', '小李', '1'); 
+INSERT INTO `student` (`id`, `name`, `tid`) VALUES ('5', '小王', '1');​
+```
+
+#### 10.1.2 在pom.xml导入lombok
+
+(不需要自己添加构造方法等-----用@Data)
+
+`mybatis-study\pom.xml`
+
+```xml
+<!--Lombok插件-->
+<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.12</version>
+</dependency>
+</dependencies>
+```
+
+#### 10.1.3 在pojo包下新建实体类Teacher,Student
+
+1. 学生实体类
+
+   `mybatis-study\mybatis-05\src\main\java\com\phc\pojo\Student.java`
+
+   ```java
+   package com.phc.pojo;
+   import lombok.Data;
+   /**
+    * @FileName Student.java
+    * @Description 学生实体类
+    * @Author phc
+    * @date 2023/1/13 10:59
+    * @Version 1.0
+    */
+   @Data
+   public class Student {
+       private int id;
+       private String name;
+       //学生需要关联一个老师
+       private Teacher teacher;
+   }
+   ```
+
+2. 教师实体类
+
+   `mybatis-study\mybatis-05\src\main\java\com\phc\pojo\Teacher.java`
+
+   ```java
+   package com.phc.pojo;
+   import lombok.Data;
+   /**
+    * @FileName Teacher.java
+    * @Description 教师实体类
+    * @Author phc
+    * @date 2023/1/13 10:59
+    * @Version 1.0
+    */
+   @Data
+   public class Teacher {
+       private int id;
+       private String name;
+   }
+   ```
+
+#### 10.1.4 建立Mapper接口
+
+1. `mybatis-study\mybatis-05\src\main\java\com\phc\dao\StudentMapper.java`
+
+   ```java
+   package com.phc.dao;
+   /**
+    * @FileName StudentMapper.i
+    * @Description 学生类接口
+    * @Author phc
+    * @date 2023/1/13 11:06
+    * @Version 1.0
+    */
+   public interface StudentMapper {
+   
+   }
+   ```
+
+2. `mybatis-study\mybatis-05\src\main\java\com\phc\dao\TeacherMapper.java`
+
+   ```java
+   package com.phc.dao;
+   import com.phc.pojo.Teacher;
+   import org.apache.ibatis.annotations.Param;
+   import org.apache.ibatis.annotations.Select;
+   /**
+    * @FileName TeacherMapper.i
+    * @Description 教师类接口
+    * @Author phc
+    * @date 2023/1/13 11:06
+    * @Version 1.0
+    */
+   public interface TeacherMapper {
+       @Select("select * from teacher where id = #{tid}")
+       Teacher getTeacherById(@Param("tid") int id);
+   }
+   ```
+
+#### 10.1.5 建立Mapper.xml文件
+
+1. `mybatis-study\mybatis-05\src\main\resources\com.phc.dao\StudentMapper.xml`
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE mapper
+           PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+           "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <mapper namespace="com.phc.dao.StudentMapper">
+   </mapper>
+   ```
+
+2. `mybatis-study\mybatis-05\src\main\resources\com.phc.dao\TeacherMapper.xml`
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE mapper
+           PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+           "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <!--mybatis核心配置文件-->
+   <mapper namespace="com.phc.dao.TeacherMapper">
+   </mapper>
+   ```
+
+#### 10.1.6 注册Mapper接口
+
+`mybatis-study\mybatis-05\src\main\resources\mybatis-config.xml`
+
+```xml
+<!--绑定接口-->
+<mappers>
+    <mapper class="com.phc.dao.StudentMapper" />
+    <mapper class="com.phc.dao.TeacherMapper" />
+</mappers>
+```
+
+#### 10.1.7 测试
+
+`mybatis-study\mybatis-05\src\test\java\com\phc\dao\MyTest.java`
+
+```java
+package com.phc.dao;
+import com.phc.pojo.Teacher;
+import com.phc.utils.MybatisUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.junit.Test;
+/**
+ * @FileName MyTest.java
+ * @Description 测试类
+ * @Author phc
+ * @date 2023/1/13 11:23
+ * @Version 1.0
+ */
+public class MyTest {
+    @Test
+    public void getTeacherById() {
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        TeacherMapper teacherMapper = sqlSession.getMapper(TeacherMapper.class);
+        Teacher teacher = teacherMapper.getTeacherById(1);
+        System.out.println(teacher);
+        sqlSession.close();
+    }
+}
+```
+
+#### 10.1.8 文件结构
+
+![](pictures/10-复杂查询环境搭建/文件结构.png)
+
+### 10.2 按照查询嵌套处理
+
+1. `mybatis-study\mybatis-05\src\main\java\com\phc\dao\StudentMapper.java`
+
+   ```java
+   package com.phc.dao;
+   import com.phc.pojo.Student;
+   import java.util.List;
+   /**
+    * @FileName StudentMapper.i
+    * @Description 学生类接口
+    * @Author phc
+    * @date 2023/1/13 11:06
+    * @Version 1.0
+    */
+   public interface StudentMapper {
+       public List<Student> getStudent();
+   }
+   ```
+
+2. `mybatis-study\mybatis-05\src\main\resources\com.phc.dao\StudentMapper.xml`
+
+   ```xml
+   <!--方法一-->
+   <!--思路:1.查询所有的学生信息。2.根据查询出来的学生的tid,寻找对应的老师子查询-->
+   <select id="getStudent" resultMap="StudentTeacher">
+       SELECT * FROM mybatis.student;
+   </select>
+   <resultMap id="StudentTeacher" type="Student">
+       <result property="id" column="id" />
+       <result property="name" column="name" />
+       <!--复杂的属性,我们需要单独处理。
+           对象:association
+           集合:collection
+           -->
+       <association property="teacher" column="tid" javaType="Teacher" select="getTeacher" />
+   </resultMap>
+   <select id="getTeacher" resultType="Teacher">
+       SELECT * FROM mybatis.teacher WHERE id=#{tid};
+   </select>
+   ```
+
+3. `mybatis-study\mybatis-05\src\test\java\com\phc\dao\MyTest.java`
+
+   ```java
+   @Test
+   public void getStudentTest() {
+       SqlSession sqlSession = MybatisUtils.getSqlSession();
+       StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
+       List<Student> students = studentMapper.getStudent();
+       for(Student student:students) {
+           System.out.println(student);
+       }
+   }
+   ```
+
+4. 结果
+
+   ![](pictures/10-复杂查询环境搭建/子查询.png)
+
+### 10.3 按照结果嵌套处理
+
+1. `mybatis-study\mybatis-05\src\main\java\com\phc\dao\StudentMapper.java`
+
+   ```java
+   //根据结果集查询
+   public List<Student> getStudent2();
+   ```
+
+2. `mybatis-study\mybatis-05\src\main\resources\com.phc.dao\StudentMapper.xml`
+
+   ```xml
+   <!--方法二-->
+   <!--按照结果嵌套处理-->
+   <select id="getStudent2" resultMap="StudentTeacher2">
+       SELECT s.id sid,s.name sname,t.name tname FROM student s,teacher t WHERE s.tid=t.id;
+   </select>
+   <resultMap id="StudentTeacher2" type="Student">
+       <result property="id" column="sid" />
+       <result property="name" column="sname" />
+       <!--复杂类型-->
+       <association property="teacher" javaType="Teacher">
+           <result property="name" column="tname" />
+       </association>
+   </resultMap>
+   ```
+
+3. `mybatis-study\mybatis-05\src\test\java\com\phc\dao\MyTest.java`
+
+   ```java
+   @Test
+   public void getStudentTest2() {
+       SqlSession sqlSession = MybatisUtils.getSqlSession();
+       StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
+       List<Student> students = studentMapper.getStudent2();
+       for(Student student:students) {
+           System.out.println(stusdent);
+       }
+   }
+   ```
+
+   
+
+   
+
+   

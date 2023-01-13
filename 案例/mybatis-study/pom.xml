@@ -14,6 +14,7 @@
         <module>mybatis-02</module>
         <module>mybatis-03</module>
         <module>mybatis-04</module>
+        <module>mybatis-05</module>
     </modules>
 
     <!--导入依赖-->
