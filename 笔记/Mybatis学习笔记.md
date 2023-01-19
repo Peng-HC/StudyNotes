@@ -1957,6 +1957,265 @@ public class MyTest {
    }
    ```
 
+
+
+## 十一、一对多处理
+
+比如：一个老师教多个学生，对于老师而言，就是一对多的关系
+
+### 11.1 测试环境搭建
+
+大体同10.1
+
+实体类
+
+```java
+@Data
+public class Student {
+    private int id;
+    private String name;
+    private int tid;
+}
+```
+
+```java
+@Data
+public class Teacher {
+    private int id;
+    private String name;
+    //一个老师拥有多个学生
+    private List<Student> students;
+}
+```
+
+### 11.2 按照结果嵌套处理
+
+```xml
+<!--按结果嵌套查询-->
+<select id="getTeacher" resultMap="TeacherStudent">
+    select  s.id sid,s.name sname,t.name tname,t.id tid
+    from mybatis.student s,mybatis.teacher t
+    where s.tid=t.id and t.id=#{tid}
+</select>
+<resultMap id="TeacherStudent" type="Teacher">
+    <result property="id" column="tid"/>
+    <result property="name" column="tname"/>
+    <!--复杂的属性我们需要单独处理-->
+    <!--对象:association-->
+    <!-- 集合：collection -->
+    <!--        javaType=""指定属性的类型 集合中的泛型信息，我们使用ofType获取-->
+    <collection property="students" ofType="Student">
+        <result property="id" column="sid"/>
+        <result property="name" column="sname"/>
+        <result property="tid" column="tid"/>
+    </collection>
+</resultMap>
+```
+
+### 11.3 按照查询嵌套处理
+
+```xml
+<select id="getTeacher2" resultMap="TeacherStudent2">
+    select *from mybatis.teacher where id=#{tid}
+</select>
+<resultMap id="TeacherStudent2" type="Teacher">
+    <collection property="students" column="id" javaType="ArrayList" ofType="Student" select="getStudentByTeacherId"/>
+</resultMap>
+
+<select id="getStudentByTeacherId" resultType="Student">
+    select *from mybatis.student where tid =#{tid}
+</select>
+```
+
+### 11.4 小结
+
+1. 关联-`association` 【多对一】
+2. 集合-`collection` 【一对多】
+3. `javaType` & `ofType`
+   * javaType用来指定实体类中属性的类型
+   * ofType用来指定映射到List或者集合中的pojo类型，泛型中的约束类型
+4. 注意点
+   * 保证SQL的可读性，尽量保证通俗易懂
+   * 注意一对多和多对一中，属性名和字段的问题
+   * 如果问题不好排查错误，可以使用日志，建议使用log4j
+
+## 十二、动态SQL
+
+**什么是动态SQL：动态SQL就是根据不同的条件生成不同的SQL语句。**
+
+使用动态 SQL 并非一件易事，但借助可用于任何 SQL 映射语句中的强大的动态 SQL 语言，MyBatis 显著地提升了这一特性的易用性。
+
+如果你之前用过 JSTL 或任何基于类 XML 语言的文本处理器，你对动态 SQL 元素可能会感觉似曾相识。在 MyBatis 之前的版本中，需要花时间了解大量的元素。借助功能强大的基于 OGNL 的表达式，`MyBatis3`替换了之前的大部分元素，大大精简了元素种类，现在要学习的元素种类比原来的一半还要少。
+
+- if
+- choose (when, otherwise)
+- trim (where, set)
+- foreach
+
+### 12.1 搭建环境
+
+1. 创建`blog`表
+
+   ```sql
+   CREATE TABLE IF NOT EXISTS `blog`(
+   `id` VARCHAR(50) NOT NULL COMMENT '博客id',
+   `title` VARCHAR(100) NOT NULL COMMENT '博客标题',
+   `author` VARCHAR(30) NOT NULL COMMENT '博客作者',
+   `create_time` DATETIME NOT NULL COMMENT '创建时间',
+   `views` INT(30) NOT NULL COMMENT '浏览量'
+   )ENGINE=INNODB DEFAULT CHARSET=utf8
+   ```
+
+2. 创建一个普通的maven模块
+
+3. 导入lombok插件jar包
+
+   ```xml
+   <!--Lombok插件-->
+   <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+   <dependency>
+       <groupId>org.projectlombok</groupId>
+       <artifactId>lombok</artifactId>
+       <version>1.18.12</version>
+   </dependency>
+   ```
+
+4. 编写实体类
+
+   `mybatis-study\mybatis-07\src\main\java\com\phc\pojo\Blog.java`
+
+   ```java
+   package com.phc.pojo;
+   import lombok.Data;
+   import java.util.Date;
+   /**
+    * @FileName Blog.java
+    * @Description blog表
+    * @Author phc
+    * @date 2023/1/19 16:04
+    * @Version 1.0
+    */
+   @Data
+   public class Blog {
+       private String id;
+       private String title;
+       private String author;
+       private Date createTime;
+       private int views;
+   }
+   ```
+
+5. 编写获得唯一ID的工具类
+
+   `mybatis-study\mybatis-07\src\main\java\com\phc\utils\IDUtils.java`
+
+   ```java
+   package com.phc.utils;
+   import org.junit.Test;
+   import java.util.UUID;
+   /**
+    * @FileName IDUtils.java
+    * @Description 通过UUID生成不一致且具有随机性的ID
+    * @Author phc
+    * @date 2023/1/19 20:20
+    * @Version 1.0
+    */
+   public class IDUtils {
+       public static String getId() {
+           return UUID.randomUUID().toString().replace("-","");
+       }
+   
+       @Test
+       public void getIdTest() {
+           System.out.println(IDUtils.getId());
+       }
+   }
+   ```
+
+6. 编写实体类对应的`Mapper`接口和`Mapper.xml`文件
+
+   （1）`mybatis-study\mybatis-07\src\main\java\com\phc\dao\BlogMapper.java`
+
+   ```java
+   package com.phc.dao;
+   import com.phc.pojo.Blog;
+   /**
+    * @FileName BlogMapper.i
+    * @Description 实体类Blog的接口
+    * @Author phc
+    * @date 2023/1/19 16:11
+    * @Version 1.0
+    */
+   public interface BlogMapper {
+       //插入数据
+       int insertData(Blog blog);
+   }
+   ```
+
+   （2）`mybatis-study\mybatis-07\src\main\java\com\phc\dao\BlogMapper.xml`
+
+   ```xml
+   <?xml version="1.0" encoding="UTF-8" ?>
+   <!DOCTYPE mapper
+           PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+           "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   
+   <mapper namespace="com.phc.dao.BlogMapper">
+       <insert id="insertData" parameterType="blog">
+           insert into mybatis.blog (id,title,author,create_time,views)
+           values (#{id},#{title},#{author},#{createTime},#{views})
+       </insert>
+   </mapper>
+   ```
+
+7. 测试
+
+   `mybatis-study\mybatis-07\src\test\java\MyTest.java`
+
+   ```java
+   import com.phc.dao.BlogMapper;
+   import com.phc.pojo.Blog;
+   import com.phc.utils.IDUtils;
+   import com.phc.utils.MybatisUtils;
+   import org.apache.ibatis.session.SqlSession;
+   import org.junit.Test;
+   
+   import java.util.Date;
+   
+   /**
+    * @FileName MyTest.java
+    * @Description 动态SQL测试
+    * @Author phc
+    * @date 2023/1/19 20:49
+    * @Version 1.0
+    */
+   public class MyTest {
+       @Test
+       public void insertDataTest() {
+           SqlSession sqlSession = MybatisUtils.getSqlSession();
+           BlogMapper blogMapper = sqlSession.getMapper(BlogMapper.class);
+           Blog blog = new Blog();
+           // 生成一个随机且唯一的ID
+           blog.setId(IDUtils.getId());
+           blog.setTitle("世界这么大，我想去看看");
+           blog.setAuthor("phc");
+           blog.setCreateTime(new Date());
+           blog.setViews(999999);
+           blogMapper.insertData(blog);
+   
+           // 生成一个随机且唯一的ID
+           blog.setId(IDUtils.getId());
+           blog.setTitle("东南大学");
+           blog.setAuthor("phw");
+           blog.setCreateTime(new Date());
+           blog.setViews(666666);
+           blogMapper.insertData(blog);
+           sqlSession.close();
+       }
+   }
+
+
+
    
 
    
