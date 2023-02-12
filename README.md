@@ -2213,11 +2213,3 @@ public class Teacher {
            sqlSession.close();
        }
    }
-
-
-
-   
-
-   
-
-   
