@@ -67,9 +67,9 @@
 >    }
 >    ```
 >
->    ![File类中创建文件的方法](.\pictures\第一章 File类之添加方法\File类中创建文件的方法.png "File类中创建文件的方法")
+>    ![File类中创建文件的方法](.\pictures\第一章 File类之添加方法\File类中创建文件的方法.png)
 >
->    ![File类中创建文件的方法](.\pictures\第一章 File类之添加方法\File类中创建文件的方法2.png "File类中创建文件的方法")
+>    ![File类中创建文件的方法](.\pictures\第一章 File类之添加方法\File类中创建文件的方法2.png)
 >
 >
 
